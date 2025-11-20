@@ -1,0 +1,14 @@
+# Generated code
+generated/
+**/generated/**
+
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Other
+*.min.js
+*.min.css
