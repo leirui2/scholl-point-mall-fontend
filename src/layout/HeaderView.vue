@@ -66,7 +66,7 @@ import { ElMessage } from "element-plus";
 import type { FormItemRule } from "element-plus"; // 导入Element Plus的表单规则类型
 
 import { Setting, User } from "@element-plus/icons-vue";
-import { Service } from "../../generated";
+import { UserControllerService } from "../../generated";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -154,7 +154,7 @@ const handleConfirmUpdatePassword = async () => {
 	await passwordFormRef.value.validate();
 
 	// 调用密码修改API
-	const res = await Service.updateUserPasswordUsingPost(dialogForm);
+	const res = await UserControllerService.updateUserPasswordUsingPost(dialogForm);
 
 	if (res.code === 0) {
 		ElMessage({

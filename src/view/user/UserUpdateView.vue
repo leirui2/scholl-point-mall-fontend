@@ -99,7 +99,7 @@ import { reactive, ref, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { Plus, Check, Close } from "@element-plus/icons-vue";
 import type { UploadProps } from "element-plus";
-import { Service } from "../../../generated";
+import { UserControllerService } from "../../../generated";
 import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
@@ -119,7 +119,7 @@ const imageUrl = ref("");
 
 //获取登录用户信息
 const getLoginUser = async () => {
-	const res = await Service.getLoginUserUsingGet();
+	const res = await UserControllerService.getLoginUserUsingGet();
 	if (res.code === 0 && res.data) {
 		const data = res.data;
 		form.email = data.email ?? "";
@@ -176,7 +176,7 @@ const submitForm = () => {
 		cancelButtonText: "取消",
 		type: "warning",
 	}).then(async () => {
-		const res = await Service.updateUserUsingPost(form);
+		const res = await UserControllerService.updateUserUsingPost(form);
 		if (res.code === 0) {
 			ElMessage.success("保存成功！");
 			await getLoginUser();

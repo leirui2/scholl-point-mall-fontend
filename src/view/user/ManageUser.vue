@@ -185,7 +185,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { Service } from "../../../generated";
+import { UserControllerService } from "../../../generated";
 import type { UserQueryRequest } from "../../../generated";
 import moment from "moment";
 import { ElMessage, ElMessageBox, type UploadProps } from "element-plus";
@@ -240,7 +240,7 @@ const Total = ref(0);
 //打开修改用户Dialog
 const updateDialog = async (id: number) => {
 	dialogFormVisible.value = true;
-	const res = await Service.getUserByIdUsingGet(id);
+	const res = await UserControllerService.getUserByIdUsingGet(id);
 	if (res.code === 0) {
 		form.userProfile = res.data?.userProfile || "";
 		form.userName = res.data?.userName || "";
@@ -291,7 +291,7 @@ const submitForm = () => {
 		cancelButtonText: "取消",
 		type: "warning",
 	}).then(async () => {
-		const res = await Service.updateUserByAdminUsingPost(form);
+		const res = await UserControllerService.updateUserByAdminUsingPost(form);
 		if (res.code === 0) {
 			ElMessage.success("保存成功！");
 			await loadTableData();
@@ -343,7 +343,7 @@ onMounted(() => {
 
 // 加载表格数据
 const loadTableData = async () => {
-	const res = await Service.listUsersByPageUsingPost(formInline);
+	const res = await UserControllerService.listUsersByPageUsingPost(formInline);
 	if (res.code === 0 && res.data) {
 		// 从后台获取总记录数
 		Total.value = Number(res.data.total || 0);
@@ -365,7 +365,7 @@ const onSubmit = () => {
 
 //重置密码
 const reset = async (id: number) => {
-	const res = await Service.resetPasswordUsingPost(id);
+	const res = await UserControllerService.resetPasswordUsingPost(id);
 	if (res.code === 0) {
 		ElMessage({
 			message: "重置成功",
@@ -382,7 +382,7 @@ const reset = async (id: number) => {
 
 //删除用户
 const deleteUser = async (id: number) => {
-	const res = await Service.deleteUserUsingPost(id);
+	const res = await UserControllerService.deleteUserUsingPost(id);
 	if (res.code === 0) {
 		ElMessage({
 			message: "删除成功",
@@ -399,7 +399,7 @@ const deleteUser = async (id: number) => {
 
 //封禁用户
 const BanUnbanUser = async (id: number, status: number) => {
-	const res = await Service.updateUserStatusUsingPost(id, status);
+	const res = await UserControllerService.updateUserStatusUsingPost(id, status);
 	if (res.code === 0) {
 		ElMessage({
 			message: status === 1 ? "封禁成功" : "解封成功",

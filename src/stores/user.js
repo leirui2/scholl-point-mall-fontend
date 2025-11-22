@@ -1,6 +1,6 @@
 // stores/user.js
 import { defineStore } from "pinia";
-import { Service } from "../../generated";
+import { UserControllerService } from "../../generated";
 import { ElMessage } from "element-plus";
 
 export const useUserStore = defineStore("user", {
@@ -18,7 +18,7 @@ export const useUserStore = defineStore("user", {
 		 */
 		async fetchUserInfo() {
 			try {
-				const res = await Service.getLoginUserUsingGet();
+				const res = await UserControllerService.getLoginUserUsingGet();
 				if (res.code === 0 && res.data) {
 					this.userInfo = res.data;
 					this.isLoggedIn = true;
@@ -60,7 +60,7 @@ export const useUserStore = defineStore("user", {
 		 */
 		async login(loginData) {
 			try {
-				const res = await Service.userLoginUsingPost(loginData);
+				const res = await UserControllerService.userLoginUsingPost(loginData);
 				if (res.code === 0 && res.data) {
 					this.userInfo = res.data;
 					this.isLoggedIn = true;
@@ -93,7 +93,7 @@ export const useUserStore = defineStore("user", {
 		 */
 		async logout(routerPush) {
 			try {
-				const res = await Service.logoutUsingPost();
+				const res = await UserControllerService.logoutUsingPost();
 				// 无论后端是否成功，都清除本地状态
 				this.clearUserInfo();
 

@@ -57,9 +57,8 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { Service } from "../../../generated/index.js";
+import { UserControllerService } from "../../../generated/index.js";
 import { useRouter } from "vue-router";
-import { User, Lock } from "@element-plus/icons-vue";
 
 const router = useRouter();
 const registerFormRef = ref();
@@ -102,7 +101,7 @@ const onSubmit = async () => {
 		loading.value = true;
 		await registerFormRef.value.validate();
 
-		const res = await Service.registerUsingPost({
+		const res = await UserControllerService.registerUsingPost({
 			userAccount: form.userAccount,
 			userPassword: form.userPassword,
 			checkPassword: form.checkPassword,

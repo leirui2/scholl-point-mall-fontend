@@ -53,7 +53,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { Service } from "../../../generated/index.js";
+import { UserControllerService } from "../../../generated/index.js";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 
@@ -85,7 +85,7 @@ const onSubmit = async () => {
 		loading.value = true;
 		await loginFormRef.value.validate();
 
-		const res = await Service.userLoginUsingPost({
+		const res = await UserControllerService.userLoginUsingPost({
 			userAccount: form.userAccount,
 			userPassword: form.userPassword,
 		});
