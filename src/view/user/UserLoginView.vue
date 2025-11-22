@@ -3,7 +3,7 @@
 		<div class="login-box">
 			<div class="login-header">
 				<h2>用户登录</h2>
-				<p>欢迎使用用户中心系统</p>
+				<p>欢迎使用学校积分兑换商城</p>
 			</div>
 
 			<el-form :model="form" :rules="rules" ref="loginFormRef" class="login-form">

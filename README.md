@@ -53,5 +53,5 @@ npm run lint
 
 ### 调用openapi生成前端接口
 ```sh
-openapi --input http://localhost:8083/api/v2/api-docs --output ./generated --client axios
+openapi --input http://localhost:8084/api/v2/api-docs --output ./generated --client axios
 ```

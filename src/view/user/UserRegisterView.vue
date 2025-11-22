@@ -3,47 +3,29 @@
 		<div class="register-box">
 			<div class="register-header">
 				<h2>用户注册</h2>
-				<p>欢迎加入用户中心系统</p>
+				<p>欢迎加入学校积分兑换商城</p>
 			</div>
-			
-			<el-form 
-				:model="form" 
-				:rules="rules" 
-				ref="registerFormRef"
-				class="register-form"
-			>
+
+			<el-form :model="form" :rules="rules" ref="registerFormRef" class="register-form">
 				<el-form-item prop="userAccount">
-					<el-input 
-						v-model="form.userAccount" 
-						placeholder="请输入账号"
-						clearable
-						size="large"
-						prefix-icon="User"
-					>
+					<el-input v-model="form.userAccount" placeholder="请输入账号" clearable size="large" prefix-icon="User">
 						<template #prepend>
 							<span class="input-label">账号</span>
 						</template>
 					</el-input>
 				</el-form-item>
-				
+
 				<el-form-item prop="userPassword">
-					<el-input 
-						v-model="form.userPassword" 
-						type="password"
-						placeholder="请输入密码"
-						show-password
-						size="large"
-						prefix-icon="Lock"
-					>
+					<el-input v-model="form.userPassword" type="password" placeholder="请输入密码" show-password size="large" prefix-icon="Lock">
 						<template #prepend>
 							<span class="input-label">密码</span>
 						</template>
 					</el-input>
 				</el-form-item>
-				
+
 				<el-form-item prop="checkPassword">
-					<el-input 
-						v-model="form.checkPassword" 
+					<el-input
+						v-model="form.checkPassword"
 						type="password"
 						placeholder="请确认密码"
 						show-password
@@ -56,19 +38,13 @@
 						</template>
 					</el-input>
 				</el-form-item>
-				
+
 				<el-form-item>
-					<el-button 
-						type="primary" 
-						size="large" 
-						class="register-button"
-						:loading="loading"
-						@click="onSubmit"
-					>
-						{{ loading ? '注册中...' : '注册' }}
+					<el-button type="primary" size="large" class="register-button" :loading="loading" @click="onSubmit">
+						{{ loading ? "注册中..." : "注册" }}
 					</el-button>
 				</el-form-item>
-				
+
 				<div class="register-footer">
 					<span>已有账号？</span>
 					<el-button type="text" @click="goToLogin">立即登录</el-button>
@@ -115,7 +91,7 @@ const rules = {
 					callback();
 				}
 			},
-			trigger: "blur"
+			trigger: "blur",
 		},
 	],
 };
@@ -125,11 +101,11 @@ const onSubmit = async () => {
 	try {
 		loading.value = true;
 		await registerFormRef.value.validate();
-		
+
 		const res = await Service.registerUsingPost({
 			userAccount: form.userAccount,
 			userPassword: form.userPassword,
-			checkPassword: form.checkPassword
+			checkPassword: form.checkPassword,
 		});
 
 		if (res.code === 0) {
@@ -256,7 +232,7 @@ const goToLogin = () => {
 		margin: 10px;
 		padding: 30px 20px;
 	}
-	
+
 	.register-header h2 {
 		font-size: 24px;
 	}

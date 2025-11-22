@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
 	<div class="home-container">
 		<div class="welcome-card">
-			<h1 class="welcome-title">欢迎使用用户中心系统</h1>
+			<h1 class="welcome-title">欢迎使用学校积分兑换商城</h1>
 			<div class="user-info" v-if="userInfo && userInfo.userName">
 				<p class="greeting">您好，{{ userInfo.userName }}！</p>
 				<p class="description">您已成功登录系统，可以开始使用各项功能了。</p>

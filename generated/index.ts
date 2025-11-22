@@ -24,4 +24,5 @@ export type { UserRegisterRequest } from './models/UserRegisterRequest';
 export type { UserUpdateRequest } from './models/UserUpdateRequest';
 export type { UserUpdateVO } from './models/UserUpdateVO';
 
-export { Service } from './services/Service';
+export { FileDetailControllerService } from './services/FileDetailControllerService';
+export { UserControllerService } from './services/UserControllerService';
