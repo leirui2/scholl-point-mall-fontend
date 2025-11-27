@@ -23,11 +23,11 @@
 
 ## 清空 node_modules 文件夹
 ```sh
-Remove-Item -Recurse -Force node_modules
+Remove-item -Recurse -Force node_modules
 ```
 ## 清空 dist 文件夹
 ```sh
-Remove-Item -Recurse -Force dist
+Remove-item -Recurse -Force dist
 ```
 
 ## Project setup

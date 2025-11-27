@@ -24,7 +24,7 @@
 						<el-form-item label="头像：" class="avatar-item">
 							<div class="avatar-upload-wrapper">
 								<el-upload
-									action="http://localhost:8083/api/upload2"
+									action="http://localhost:8084/api/file/upload2"
 									:show-file-list="false"
 									:on-success="handleAvatarSuccess"
 									:before-upload="beforeAvatarUpload"

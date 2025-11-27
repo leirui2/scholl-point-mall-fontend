@@ -3,6 +3,7 @@ import UserUpdateView from "@/view/user/UserUpdateView.vue";
 import LoginView from "@/view/user/UserLoginView.vue";
 import RegisterView from "@/view/user/UserRegisterView.vue";
 import ManageUserView from "@/view/user/ManageUser.vue";
+import ManageCategoryView from "@/view/category/ManageCategory.vue";
 
 export const routes = [
 	{
@@ -52,21 +53,30 @@ export const routes = [
 			hidden: false,
 		},
 	},
-	// {
-	// 	path: "/user",
-	// 	component: ManageUserView,
-	// 	meta: {
-	// 		title: "用户管理",
-	// 		icon: "user",
-	// 		hidden: false,
-	// 	},
-	// 	children: [
-	// 		{
-	// 			icon: "Apple",
-	// 			title: "测试",
-	// 			path: "test",
-	// 			component: ManageUserView,
-	// 		},
-	// 	],
-	// },
+	{
+		path: "/category",
+		component: ManageCategoryView,
+		meta: {
+			title: "商品类别管理",
+			icon: "Tickets",
+			hidden: false,
+		},
+	},
+	{
+		path: "/user",
+		component: ManageUserView,
+		meta: {
+			title: "用户管理",
+			icon: "user",
+			hidden: false,
+		},
+		children: [
+			{
+				icon: "Apple",
+				title: "测试",
+				path: "test",
+				component: ManageUserView,
+			},
+		],
+	},
 ];

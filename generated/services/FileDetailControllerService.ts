@@ -19,7 +19,7 @@ export class FileDetailControllerService {
     ): CancelablePromise<FileInfo | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/upload',
+            url: '/api/file/upload',
             body: file,
             errors: {
                 401: `Unauthorized`,
@@ -40,7 +40,7 @@ export class FileDetailControllerService {
     ): CancelablePromise<FileInfo | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/upload-image',
+            url: '/api/file/upload-image',
             body: file,
             errors: {
                 401: `Unauthorized`,
@@ -61,7 +61,7 @@ export class FileDetailControllerService {
     ): CancelablePromise<FileInfo | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/upload-platform',
+            url: '/api/file/upload-platform',
             body: file,
             errors: {
                 401: `Unauthorized`,
@@ -82,7 +82,7 @@ export class FileDetailControllerService {
     ): CancelablePromise<string | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/upload2',
+            url: '/api/file/upload2',
             body: file,
             errors: {
                 401: `Unauthorized`,
