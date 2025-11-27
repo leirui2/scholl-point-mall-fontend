@@ -58,7 +58,7 @@
 
 	<!-- 添加 、 修改对话框dialog -->
 	<div>
-		<el-dialog v-model="dialogFormVisible" :title="title" width="500">
+		<el-dialog v-model="dialogFormVisible" :title="title" width="500" align-center draggable>
 			<el-form :model="form" label-width="100px" class="user-form" label-position="left">
 				<el-row :gutter="20">
 					<el-col :span="24">
@@ -161,9 +161,9 @@ const submitForm = () => {
 		type: "warning",
 	}).then(async () => {
 		let res = null;
-		if (title.value === "添加") {
+		if (title.value === "添加类别") {
 			res = await CategoryControllerService.addCategoryUsingPost(form);
-		} else if (title.value === "修改") {
+		} else if (title.value === "修改类别") {
 			res = await CategoryControllerService.updateCategoryUsingPost(form);
 		}
 		if (res && res.code === 0) {

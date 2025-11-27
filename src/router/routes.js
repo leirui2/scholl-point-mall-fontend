@@ -4,6 +4,7 @@ import LoginView from "@/view/user/UserLoginView.vue";
 import RegisterView from "@/view/user/UserRegisterView.vue";
 import ManageUserView from "@/view/user/ManageUser.vue";
 import ManageCategoryView from "@/view/category/ManageCategory.vue";
+import ManageItemView from "@/view/item/ManageItem.vue";
 
 export const routes = [
 	{
@@ -63,20 +64,29 @@ export const routes = [
 		},
 	},
 	{
-		path: "/user",
-		component: ManageUserView,
+		path: "/item",
+		component: ManageItemView,
 		meta: {
-			title: "用户管理",
-			icon: "user",
+			title: "商品管理",
+			icon: "Goods",
 			hidden: false,
 		},
-		children: [
-			{
-				icon: "Apple",
-				title: "测试",
-				path: "test",
-				component: ManageUserView,
-			},
-		],
 	},
+	// {
+	// 	path: "/item",
+	// 	component: ManageItemView,
+	// 	meta: {
+	// 		title: "商品管理",
+	// 		icon: "Goods",
+	// 		hidden: false,
+	// 	},
+	// 	children: [
+	// 		{
+	// 			icon: "Apple",
+	// 			title: "测试",
+	// 			path: "test",
+	// 			component: ManageUserView,
+	// 		},
+	// 	],
+	// },
 ];

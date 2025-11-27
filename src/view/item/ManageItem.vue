@@ -1,33 +1,34 @@
 <template>
-	<div class="manage-user-container">
+	<div class="manage-category-container">
 		<div class="form-container">
+			<div class="add-btn">
+				<el-button type="primary" @click="addDialog" size="default">
+					<el-icon><Plus /></el-icon>
+					<span>添加商品</span>
+				</el-button>
+			</div>
+
 			<el-form :inline="true" :model="formInline" class="form-inline">
-				<el-form-item label="账号:">
-					<el-input v-model="formInline.userAccount" placeholder="账号" clearable />
+				<el-form-item label="商品名:">
+					<el-input v-model="formInline.name" placeholder="商品名" clearable @clear="onSubmit" />
 				</el-form-item>
-				<el-form-item label="昵称:">
-					<el-input v-model="formInline.userName" placeholder="昵称" clearable />
-				</el-form-item>
-				<el-form-item label="性别:">
-					<el-select v-model="formInline.gender" placeholder="选择性别" clearable>
-						<el-option label="男" :value="1" />
-						<el-option label="女" :value="0" />
+
+				<el-form-item label="类别:">
+					<el-select
+						v-model="formInline.categoryid"
+						:empty-values="[null, undefined]"
+						:value-on-clear="null"
+						clearable
+						placeholder="类别"
+						@clear="loadTableData"
+						style="width: 240px"
+					>
+						<el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
 					</el-select>
 				</el-form-item>
-				<el-form-item label="用户状态:">
-					<el-select v-model="formInline.userStatus" placeholder="选择用户状态" clearable>
-						<el-option label="正常" :value="0" />
-						<el-option label="封禁" :value="1" />
-					</el-select>
-				</el-form-item>
-				<el-form-item label="权限:">
-					<el-select v-model="formInline.userRole" placeholder="是否是管理员" clearable>
-						<el-option label="管理员" :value="1" />
-						<el-option label="普通用户" :value="0" />
-					</el-select>
-				</el-form-item>
+
 				<el-form-item>
-					<el-button type="primary" @click="onSubmit" size="small">
+					<el-button type="primary" @click="onSubmit" size="default">
 						<el-icon><Search /></el-icon>
 						<span>查询</span>
 					</el-button>
@@ -38,38 +39,35 @@
 		<div class="form-table">
 			<el-table :data="tableData" style="width: 100%">
 				<el-table-column type="selection" width="55" />
-				<el-table-column property="userAccount" label="账号" width="100" show-overflow-tooltip />
-				<el-table-column property="userName" label="昵称" width="100" show-overflow-tooltip />
-				<el-table-column label="性别" width="60">
-					<template #default="scope">{{ scope.row.gender === 1 ? "男" : "女" }}</template>
-				</el-table-column>
-				<el-table-column property="email" label="邮箱" width="120" show-overflow-tooltip />
-				<el-table-column property="phone" label="手机号" width="80" show-overflow-tooltip />
-				<el-table-column label="头像" width="80">
+				<el-table-column property="id" label="ID" width="180" show-overflow-tooltip />
+				<el-table-column property="name" label="商品名" width="120" />
+				<el-table-column label="图片" width="80">
 					<template #default="scope">
-						<el-avatar :src="scope.row.userAvatar" />
+						<el-avatar :src="scope.row.imageurl" />
 					</template>
 				</el-table-column>
-				<el-table-column property="userProfile" label="个人介绍" width="120" show-overflow-tooltip />
-				<el-table-column label="状态" width="80">
+				<el-table-column property="categoryName" label="类别" width="80" show-overflow-tooltip />
+				<el-table-column property="price" label="价格" width="80" />
+				<el-table-column property="status" label="状态" width="80">
 					<template #default="scope">
-						<el-tag type="success" v-if="scope.row.userStatus === 0">正常</el-tag>
-						<el-tag type="danger" v-else>封禁</el-tag>
+						<el-tag v-if="scope.row.status === 0" type="success">在售</el-tag>
+						<el-tag v-else type="danger">下架</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="权限" width="80">
-					<template #default="scope">{{ scope.row.userRole === 0 ? "普通用户" : "管理员" }}</template>
+				<el-table-column property="stock" label="库存" width="80">
+					<template #default="scope">{{ scope.row.stock }}{{ scope.row.unit }}</template>
 				</el-table-column>
+
+				<el-table-column property="description" label="描述" width="180" show-overflow-tooltip />
 				<el-table-column label="创建日期" width="120">
 					<template #default="scope">{{ moment(scope.row.createTime).format("YYYY-MM-DD") }}</template>
 				</el-table-column>
-				<el-table-column label="操作" width="120">
+				<el-table-column label="操作" width="320">
 					<template #default="scope">
 						<div class="operation-buttons">
-							<el-button @click="reset(scope.row.id)" size="small">重置密码</el-button>
 							<el-button @click="updateDialog(scope.row.id)" size="small">修改</el-button>
-							<el-button @click="BanUnbanUser(scope.row.id, 1)" size="small" v-if="scope.row.userStatus === 0">封禁</el-button>
-							<el-button @click="BanUnbanUser(scope.row.id, 0)" size="small" v-else>解封</el-button>
+							<el-button @click="ItemUnBan(scope.row.id, 1)" size="small" v-if="scope.row.status === 0">下架</el-button>
+							<el-button @click="ItemUnBan(scope.row.id, 0)" size="small" v-else>上架</el-button>
 							<el-button @click="deleteUser(scope.row.id)" size="small">删除</el-button>
 						</div>
 					</template>
@@ -92,25 +90,13 @@
 		</div>
 	</div>
 
-	<!-- 密码修改对话框dialog -->
+	<!-- 添加 、 修改对话框dialog -->
 	<div>
-		<el-dialog v-model="dialogFormVisible" title="信息修改" width="500">
+		<el-dialog v-model="dialogFormVisible" :title="title" width="500" draggable align-center close-icon="Close">
 			<el-form :model="form" label-width="100px" class="user-form" label-position="left">
 				<el-row :gutter="20">
 					<el-col :span="24">
-						<el-form-item label="账号：" prop="userAccount">
-							<el-input v-model="form.userAccount" readonly clearable class="form-input" prefix-icon="User" />
-						</el-form-item>
-					</el-col>
-
-					<el-col :span="24">
-						<el-form-item label="昵称：" prop="userName">
-							<el-input v-model="form.userName" clearable class="form-input" prefix-icon="UserFilled" />
-						</el-form-item>
-					</el-col>
-
-					<el-col :span="24">
-						<el-form-item label="头像：" class="avatar-item">
+						<el-form-item label="图片：" class="avatar-item">
 							<div class="avatar-upload-wrapper">
 								<el-upload
 									action="http://localhost:8084/api/file/upload2"
@@ -119,10 +105,10 @@
 									:before-upload="beforeAvatarUpload"
 									class="avatar-uploader"
 								>
-									<img v-if="imageUrl" :src="imageUrl" class="avatar" alt="头像" />
+									<img v-if="imageUrl" :src="imageUrl" class="avatar" alt="图片" />
 									<div v-else class="avatar-uploader-icon">
 										<el-icon><Plus /></el-icon>
-										<span class="upload-text">上传头像</span>
+										<span class="upload-text">上传图片</span>
 									</div>
 								</el-upload>
 								<div class="avatar-info">
@@ -131,34 +117,41 @@
 							</div>
 						</el-form-item>
 					</el-col>
-
 					<el-col :span="24">
-						<el-form-item label="联系方式：" prop="phone">
-							<el-input v-model="form.phone" clearable class="form-input" prefix-icon="Phone" />
+						<el-form-item label="商品名：" prop="name">
+							<el-input v-model="form.name" clearable class="form-input" prefix-icon="User" />
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="类别：" prop="categoryid">
+							<el-select v-model="form.categoryid" clearable placeholder="类别" style="width: 240px" class="form-input">
+								<el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
+							</el-select>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="24">
-						<el-form-item label="邮箱：" prop="email">
-							<el-input v-model="form.email" clearable class="form-input" prefix-icon="Message" />
+						<el-form-item label="价格：" prop="price">
+							<el-input-number v-model="form.price" :precision="2" :step="0.1" :min="0" class="form-input" />
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="库存：" prop="stock">
+							<el-input-number v-model="form.stock" :min="0" class="form-input" prefix-icon="Phone" />
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="单位：" prop="unit">
+							<el-input v-model="form.unit" clearable class="form-input" prefix-icon="Phone" />
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="24">
-						<el-form-item label="性别：" prop="gender">
-							<el-radio-group v-model="form.gender" class="gender-group">
-								<el-radio :value="1" border>男</el-radio>
-								<el-radio :value="0" border>女</el-radio>
-							</el-radio-group>
-						</el-form-item>
-					</el-col>
-
-					<el-col :span="24">
-						<el-form-item label="个人介绍：" prop="userProfile">
+						<el-form-item label="商品描述：" prop="description">
 							<el-input
-								v-model="form.userProfile"
+								v-model="form.description"
 								maxlength="100"
-								placeholder="请输入个人介绍"
+								placeholder="请输入商品描述"
 								show-word-limit
 								type="textarea"
 								:rows="3"
@@ -185,90 +178,157 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { UserControllerService } from "../../../generated";
-import type { UserQueryRequest } from "../../../generated";
+import { ItemControllerService, ItemQueryRequest, CategoryControllerService } from "../../../generated";
 import moment from "moment";
 import { ElMessage, ElMessageBox, type UploadProps } from "element-plus";
 import { Check, Close, Plus, Search } from "@element-plus/icons-vue";
 
-const imageUrl = ref("");
+const title = ref("");
 
+const imageUrl = ref("");
 const dialogFormVisible = ref(false);
+
 const form = reactive({
-	email: "",
-	gender: 0,
+	name: "",
+	description: "",
 	id: 0,
-	phone: "",
-	userAccount: "123",
-	userAvatar: "",
-	userName: "",
-	userPassword: "",
-	userProfile: "",
+	categoryName: "",
+	categoryid: 0,
+	price: 0,
+	stock: 0,
+	imageurl: "",
+	status: 0,
+	unit: "",
 });
 
-const formInline = reactive<UserQueryRequest>({
-	userAccount: "",
-	userName: "",
-	gender: undefined,
-	userStatus: undefined,
-	userRole: undefined,
+const formInline = reactive<ItemQueryRequest>({
+	name: "",
 	current: 1,
 	pageSize: 10,
+	categoryName: "",
+	categoryid: 0,
+	maxPrice: 0,
+	maxStock: 0,
+	minPrice: 0,
+	minStock: 0,
 });
 
-interface User {
+interface Item {
+	categoryName: string;
+	categoryid: number;
+	imageurl: string;
+	stock: number;
+	status: number;
+	price: number;
+	unit: string;
 	id: string;
-	phone: string;
-	email: string;
-	userAvatar: string;
-	userAccount: string;
-	userName: string;
-	userProfile: string;
-	userPassword: string;
-	gender: number;
-	userStatus: number;
-	userRole: number;
+	description: string;
+	name: string;
 	createTime: Date;
 }
 
-let tableData = ref<User[]>([]); // 使用 ref 包装
+let tableData = ref<Item[]>([]); // 使用 ref 包装
 
 const currentPage = ref(1);
 const pageSize = ref(10);
 const Total = ref(0);
 
-//打开修改用户Dialog
-const updateDialog = async (id: number) => {
-	dialogFormVisible.value = true;
-	const res = await UserControllerService.getUserByIdUsingGet(id);
-	if (res.code === 0) {
-		form.userProfile = res.data?.userProfile || "";
-		form.userName = res.data?.userName || "";
-		form.userAccount = res.data?.userAccount || "";
-		form.userAvatar = res.data?.userAvatar || "";
-		form.email = res.data?.email || "";
-		form.gender = res.data?.gender || 0;
-		form.phone = res.data?.phone || "";
-		form.id = res.data?.id || 0;
-		imageUrl.value = res.data?.userAvatar || "";
+// 定义类别数组
+const categories = ref<{ id: number; name: string }[]>([]);
+
+// 获取所有类别信息
+const loadCategories = async () => {
+	try {
+		const res = await CategoryControllerService.listCategoryByPageUsingPost({
+			current: 1,
+			pageSize: 100, // 获取足够多的类别
+			name: "",
+		});
+
+		if (res.code === 0 && res.data?.records) {
+			// 将返回的数据转换为{id, name}格式
+			categories.value = res.data.records.map((record: { id?: number; name?: string }) => ({
+				id: record.id || 0,
+				name: record.name || "",
+			}));
+		}
+	} catch (error) {
+		console.error("获取类别列表失败:", error);
+		ElMessage.error("获取类别列表失败");
 	}
+};
+
+//打开添加Dialog
+const addDialog = () => {
+	title.value = "添加商品";
+	dialogFormVisible.value = true;
+	form.id = 0;
+	form.name = "";
+	form.description = "";
+	form.categoryid = 0;
+	form.stock = 0;
+	form.imageurl = "";
+	form.price = 0;
+	form.unit = "";
+	imageUrl.value = "";
+};
+
+//打开修改Dialog
+const updateDialog = async (id: number) => {
+	title.value = "修改商品";
+	dialogFormVisible.value = true;
+	const res = await ItemControllerService.getItemByIdUsingGet(id);
+	if (res.code === 0) {
+		form.name = res.data?.name || "";
+		form.description = res.data?.description || "";
+		form.id = res.data?.id || 0;
+		form.categoryid = res.data?.categoryid || 0;
+		form.stock = res.data?.stock || 0;
+		form.imageurl = res.data?.imageurl || "";
+		imageUrl.value = form.imageurl;
+		form.price = res.data?.price || 0;
+		form.unit = res.data?.unit || "";
+	}
+};
+
+//确认信息修改
+const submitForm = () => {
+	ElMessageBox.confirm("确认保存信息吗？", "提示", {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		type: "warning",
+	}).then(async () => {
+		let res = null;
+		if (title.value === "添加商品") {
+			res = await ItemControllerService.addItemUsingPost(form);
+		} else if (title.value === "修改商品") {
+			res = await ItemControllerService.updateItemUsingPost(form);
+		}
+		if (res && res.code === 0) {
+			ElMessage.success("保存成功！");
+			await loadTableData();
+		} else {
+			ElMessage.error(res?.message || "保存失败！");
+		}
+	});
+	dialogFormVisible.value = false;
 };
 
 const handleAvatarSuccess: UploadProps["onSuccess"] = (res, uploadFile) => {
 	// 服务器返回的是URL字符串，直接使用
 	if (typeof res === "string") {
 		imageUrl.value = res;
-		form.userAvatar = res;
+		form.imageurl = res;
 	} else if (res && res.data) {
 		// 如果服务器返回的是对象，尝试从data字段获取URL
 		imageUrl.value = res.data;
-		form.userAvatar = res.data;
+		form.imageurl = res.data;
 	} else {
 		// 兜底处理：使用本地预览
 		imageUrl.value = URL.createObjectURL(uploadFile.raw!);
-		form.userAvatar = imageUrl.value;
+		form.imageurl = imageUrl.value;
 	}
-	ElMessage.success("头像上传成功");
+	ElMessage.success("上传成功");
 };
 
 const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
@@ -284,24 +344,6 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
 	return true;
 };
 
-//确认信息修改
-const submitForm = () => {
-	ElMessageBox.confirm("确认保存修改信息吗？", "提示", {
-		confirmButtonText: "确定",
-		cancelButtonText: "取消",
-		type: "warning",
-	}).then(async () => {
-		const res = await UserControllerService.updateUserByAdminUsingPost(form);
-		if (res.code === 0) {
-			ElMessage.success("保存成功！");
-			await loadTableData();
-		} else {
-			ElMessage.error(res.message || "保存失败！");
-		}
-	});
-	dialogFormVisible.value = false;
-};
-
 //重置修改信息表单
 const resetForm = () => {
 	ElMessageBox.confirm("确定要取消并重置表单吗？", "提示", {
@@ -309,18 +351,10 @@ const resetForm = () => {
 		cancelButtonText: "取消",
 		type: "warning",
 	}).then(() => {
-		form.email = "";
-		form.gender = 0;
 		form.id = 0;
-		form.phone = "";
-		form.userAccount = "123";
-		form.userAvatar = "";
-		form.userName = "";
-		form.userPassword = "";
-		form.userProfile = "";
-		imageUrl.value = "";
+		form.name = "";
+		form.description = "";
 		dialogFormVisible.value = false;
-		ElMessage.info("已取消修改");
 	});
 };
 
@@ -338,12 +372,14 @@ const handleCurrentChange = (val: number) => {
 };
 
 onMounted(() => {
+	//获取类别
+	loadCategories();
 	loadTableData();
 });
 
 // 加载表格数据
 const loadTableData = async () => {
-	const res = await UserControllerService.listUsersByPageUsingPost(formInline);
+	const res = await ItemControllerService.listItemCategoryByPageUsingPost(formInline);
 	if (res.code === 0 && res.data) {
 		// 从后台获取总记录数
 		Total.value = Number(res.data.total || 0);
@@ -363,46 +399,29 @@ const onSubmit = () => {
 	loadTableData();
 };
 
-//重置密码
-const reset = async (id: number) => {
-	const res = await UserControllerService.resetPasswordUsingPost(id);
-	if (res.code === 0) {
-		ElMessage({
-			message: "重置成功",
-			type: "success",
-		});
-		await loadTableData();
-	} else {
-		ElMessage({
-			message: res.message || "重置失败",
-			type: "error",
-		});
-	}
-};
-
-//删除用户
+//删除
 const deleteUser = async (id: number) => {
-	const res = await UserControllerService.deleteUserUsingPost(id);
-	if (res.code === 0) {
-		ElMessage({
-			message: "删除成功",
-			type: "success",
-		});
-		await loadTableData();
-	} else {
-		ElMessage({
-			message: res.message || "删除失败",
-			type: "error",
-		});
-	}
+	ElMessageBox.confirm("确认删除该条信息吗？", "提示", {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		type: "error",
+	}).then(async () => {
+		const res = await ItemControllerService.deleteItemUsingPost(id);
+		if (res.code === 0) {
+			ElMessage.success("删除成功！");
+			await loadTableData();
+		} else {
+			ElMessage.error(res.message || "删除失败");
+		}
+	});
 };
 
 //封禁用户
-const BanUnbanUser = async (id: number, status: number) => {
-	const res = await UserControllerService.updateUserStatusUsingPost(id, status);
+const ItemUnBan = async (id: number, status: number) => {
+	const res = await ItemControllerService.updateItemStatusUsingPost(id, status);
 	if (res.code === 0) {
 		ElMessage({
-			message: status === 1 ? "封禁成功" : "解封成功",
+			message: status === 1 ? "下架成功" : "商家成功",
 			type: "success",
 		});
 		await loadTableData();
@@ -416,7 +435,12 @@ const BanUnbanUser = async (id: number, status: number) => {
 </script>
 
 <style scoped>
-.manage-user-container {
+.add-btn {
+	margin-bottom: 0; /* 修改此处，避免底部外边距影响对齐 */
+	margin-left: 0; /* 修改此处，避免左侧外边距影响对齐 */
+}
+
+.manage-category-container {
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
@@ -430,6 +454,10 @@ const BanUnbanUser = async (id: number, status: number) => {
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 	margin-bottom: 25px;
 	color: white;
+	display: flex; /* 使用flex布局 */
+	align-items: end; /* 底部对齐 */
+	gap: 20px; /* 元素之间的间距 */
+	flex-wrap: wrap; /* 允许换行 */
 }
 
 .form-container ::v-deep(.el-form-item__label) {
@@ -437,20 +465,67 @@ const BanUnbanUser = async (id: number, status: number) => {
 	font-weight: 500;
 }
 
+.add-btn .el-button {
+	height: 40px; /* 固定高度与表单按钮一致 */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .form-inline {
+	margin-left: 30px;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 20px;
 	align-items: end;
 }
+.avatar-upload-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
 
+.avatar-uploader {
+	width: 120px;
+	height: 120px;
+	border: 2px dashed #d9d9d9;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+
+.avatar-uploader:hover {
+	border-color: #667eea;
+	transform: scale(1.05);
+}
+
+.avatar-uploader-icon {
+	font-size: 20px;
+	color: #8c939d;
+	width: 120px;
+	height: 120px;
+	line-height: 120px;
+	text-align: center;
+}
+
+.avatar {
+	width: 120px;
+	height: 120px;
+	display: block;
+	object-fit: cover;
+	border-radius: 50%;
+}
 .form-inline .el-form-item {
 	margin-bottom: 0;
 	margin-right: 0;
 }
 
-.form-inline .el-input,
-.form-inline .el-select {
+.form-inline .el-input {
 	width: 140px;
 }
 
@@ -503,21 +578,6 @@ const BanUnbanUser = async (id: number, status: number) => {
 	background-color: #f8f9fa;
 }
 
-.avatar-cell {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.pagination-container {
-	display: flex;
-	justify-content: center;
-	background-color: #fff;
-	padding: 20px;
-	border-radius: 12px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
 /* 弹窗样式优化 */
 ::v-deep(.el-dialog) {
 	border-radius: 12px;
@@ -542,65 +602,6 @@ const BanUnbanUser = async (id: number, status: number) => {
 
 ::v-deep(.el-dialog__body) {
 	padding: 30px;
-}
-
-.avatar-upload-wrapper {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-.avatar-uploader {
-	width: 120px;
-	height: 120px;
-	border: 2px dashed #d9d9d9;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	transition: all 0.3s ease;
-	position: relative;
-	overflow: hidden;
-}
-
-.avatar-uploader:hover {
-	border-color: #667eea;
-	transform: scale(1.05);
-}
-
-.avatar-uploader-icon {
-	font-size: 28px;
-	color: #8c939d;
-	width: 120px;
-	height: 120px;
-	line-height: 120px;
-	text-align: center;
-}
-
-.avatar {
-	width: 120px;
-	height: 120px;
-	display: block;
-	object-fit: cover;
-	border-radius: 50%;
-}
-
-.upload-text {
-	display: block;
-	font-size: 14px;
-	color: #8c939d;
-	margin-top: 8px;
-}
-
-.avatar-info {
-	margin-top: 15px;
-	text-align: center;
-}
-
-.avatar-tips {
-	font-size: 12px;
-	color: #6c757d;
 }
 
 .gender-group ::v-deep(.el-radio) {
@@ -630,6 +631,21 @@ const BanUnbanUser = async (id: number, status: number) => {
 .submit-btn:hover {
 	transform: translateY(-2px);
 	box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.el-dialog__headerbtn {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	font-size: var(--el-message-close-size, 30px);
+	margin-right: 5px;
+	height: 70px;
+	outline: none;
+	padding: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 48px;
 }
 
 .cancel-btn {
