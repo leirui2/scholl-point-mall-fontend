@@ -39,7 +39,7 @@
 		<div class="form-table">
 			<el-table :data="tableData" style="width: 100%">
 				<el-table-column type="selection" width="55" />
-				<el-table-column property="id" label="ID" width="180" show-overflow-tooltip />
+				<el-table-column property="id" label="ID" width="100" show-overflow-tooltip />
 				<el-table-column property="name" label="商品名" width="120" />
 				<el-table-column label="图片" width="80">
 					<template #default="scope">
@@ -58,11 +58,11 @@
 					<template #default="scope">{{ scope.row.stock }}{{ scope.row.unit }}</template>
 				</el-table-column>
 
-				<el-table-column property="description" label="描述" width="180" show-overflow-tooltip />
+				<el-table-column property="description" label="描述" width="160" show-overflow-tooltip />
 				<el-table-column label="创建日期" width="120">
 					<template #default="scope">{{ moment(scope.row.createTime).format("YYYY-MM-DD") }}</template>
 				</el-table-column>
-				<el-table-column label="操作" width="320">
+				<el-table-column label="操作" width="220">
 					<template #default="scope">
 						<div class="operation-buttons">
 							<el-button @click="updateDialog(scope.row.id)" size="small">修改</el-button>
@@ -119,13 +119,29 @@
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="商品名：" prop="name">
-							<el-input v-model="form.name" clearable class="form-input" prefix-icon="User" />
+							<el-input v-model="form.name" clearable class="form-input" prefix-icon="SuitcaseLine" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="类别：" prop="categoryid">
-							<el-select v-model="form.categoryid" clearable placeholder="类别" style="width: 240px" class="form-input">
+							<el-select
+								v-model="form.categoryid"
+								clearable
+								placeholder="类别"
+								style="width: 240px"
+								class="form-input"
+								suffix-icon="SuitcaseLine"
+							>
 								<el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
+								<template #footer>
+									<el-button v-if="!isAdding" text bg size="small" @click="onAddOption"> 增加一个类别 </el-button>
+									<template v-else>
+										<el-input v-model="addCategoryForm.name" class="option-input" placeholder="请输入类型名" size="small" />
+										<div style="height: 5px"></div>
+										<el-button type="primary" size="small" @click="onConfirm"> 增加 </el-button>
+										<el-button size="small" @click="clear">取消</el-button>
+									</template>
+								</template>
 							</el-select>
 						</el-form-item>
 					</el-col>
@@ -142,7 +158,7 @@
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="单位：" prop="unit">
-							<el-input v-model="form.unit" clearable class="form-input" prefix-icon="Phone" />
+							<el-input v-model="form.unit" clearable class="form-input" prefix-icon="Tickets" />
 						</el-form-item>
 					</el-col>
 
@@ -193,7 +209,7 @@ const form = reactive({
 	description: "",
 	id: 0,
 	categoryName: "",
-	categoryid: 0,
+	categoryid: undefined as number | undefined,
 	price: 0,
 	stock: 0,
 	imageurl: "",
@@ -206,7 +222,7 @@ const formInline = reactive<ItemQueryRequest>({
 	current: 1,
 	pageSize: 10,
 	categoryName: "",
-	categoryid: 0,
+	categoryid: undefined,
 	maxPrice: 0,
 	maxStock: 0,
 	minPrice: 0,
@@ -232,6 +248,37 @@ let tableData = ref<Item[]>([]); // 使用 ref 包装
 const currentPage = ref(1);
 const pageSize = ref(10);
 const Total = ref(0);
+
+const addCategoryForm = reactive({
+	name: "",
+	description: "",
+	id: 0,
+});
+const isAdding = ref(false);
+const onAddOption = () => {
+	isAdding.value = true;
+};
+const onConfirm = async () => {
+	const res = await CategoryControllerService.addCategoryUsingPost(addCategoryForm);
+	if (res && res.code === 0) {
+		ElMessage.success("添加成功！");
+		//重新加载类别列表
+		await loadCategories();
+		// 添加成功后自动选择第一个类别
+		if (categories.value.length > 0) {
+			form.categoryid = categories.value[0].id;
+		}
+		isAdding.value = false;
+		addCategoryForm.name = "";
+	} else {
+		ElMessage.error(res?.message || "保存失败！");
+	}
+};
+
+const clear = () => {
+	isAdding.value = false;
+	addCategoryForm.name = "";
+};
 
 // 定义类别数组
 const categories = ref<{ id: number; name: string }[]>([]);
@@ -261,11 +308,12 @@ const loadCategories = async () => {
 //打开添加Dialog
 const addDialog = () => {
 	title.value = "添加商品";
+	isAdding.value = false;
 	dialogFormVisible.value = true;
 	form.id = 0;
 	form.name = "";
 	form.description = "";
-	form.categoryid = 0;
+	form.categoryid = undefined;
 	form.stock = 0;
 	form.imageurl = "";
 	form.price = 0;
@@ -276,13 +324,14 @@ const addDialog = () => {
 //打开修改Dialog
 const updateDialog = async (id: number) => {
 	title.value = "修改商品";
+	isAdding.value = false;
 	dialogFormVisible.value = true;
 	const res = await ItemControllerService.getItemByIdUsingGet(id);
 	if (res.code === 0) {
 		form.name = res.data?.name || "";
 		form.description = res.data?.description || "";
 		form.id = res.data?.id || 0;
-		form.categoryid = res.data?.categoryid || 0;
+		form.categoryid = res.data?.categoryid ?? undefined;
 		form.stock = res.data?.stock || 0;
 		form.imageurl = res.data?.imageurl || "";
 		imageUrl.value = form.imageurl;
@@ -372,6 +421,7 @@ const handleCurrentChange = (val: number) => {
 };
 
 onMounted(() => {
+	formInline.categoryid = undefined;
 	//获取类别
 	loadCategories();
 	loadTableData();
@@ -416,12 +466,12 @@ const deleteUser = async (id: number) => {
 	});
 };
 
-//封禁用户
+//下架商品
 const ItemUnBan = async (id: number, status: number) => {
 	const res = await ItemControllerService.updateItemStatusUsingPost(id, status);
 	if (res.code === 0) {
 		ElMessage({
-			message: status === 1 ? "下架成功" : "商家成功",
+			message: status === 1 ? "下架成功" : "上架成功",
 			type: "success",
 		});
 		await loadTableData();

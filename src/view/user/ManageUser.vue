@@ -320,7 +320,6 @@ const resetForm = () => {
 		form.userProfile = "";
 		imageUrl.value = "";
 		dialogFormVisible.value = false;
-		ElMessage.info("已取消修改");
 	});
 };
 
