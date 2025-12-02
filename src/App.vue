@@ -1,9 +1,10 @@
 <script>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import ContainerView from "@/layout/ContainerView.vue";
-import LoginView from "@/view/user/UserLoginView.vue";
-import RegisterView from "@/view/user/UserRegisterView.vue";
+import ContainerView from "@/layout/AdminLayout.vue";
+import UserLayout from "@/layout/UserLayout.vue";
+import LoginView from "@/view/UserLoginView.vue";
+import RegisterView from "@/view/UserRegisterView.vue";
 import { useUserStore } from "@/stores/user";
 import { onMounted } from "vue";
 
@@ -11,6 +12,7 @@ export default {
 	name: "App",
 	components: {
 		ContainerView,
+		UserLayout,
 		LoginView,
 		RegisterView,
 	},
@@ -34,7 +36,17 @@ export default {
 			} else if (route.path === "/register") {
 				return RegisterView;
 			}
-			// 其他页面使用主布局
+
+			// 根据用户角色选择布局
+			if (userStore.userInfo?.userRole === 1) {
+				// 管理员使用管理布局
+				return ContainerView;
+			} else if (userStore.userInfo?.userRole === 0) {
+				// 普通用户使用用户布局
+				return UserLayout;
+			}
+
+			// 默认使用管理布局
 			return ContainerView;
 		});
 

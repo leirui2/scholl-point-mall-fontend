@@ -8,11 +8,13 @@ export type UserLoginVO = {
     gender?: number;
     id?: number;
     phone?: string;
+    points?: number;
     updateTime?: string;
     userAccount?: string;
     userAvatar?: string;
     userName?: string;
     userProfile?: string;
+    userRole?: number;
     userStatus?: number;
 };
 

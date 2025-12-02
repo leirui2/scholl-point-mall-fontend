@@ -33,13 +33,28 @@
 import { computed } from "vue";
 import { routes } from "@/router/routes.js";
 import { useRoute } from "vue-router";
+import { useUserStore } from '@/stores/user';
 
 // 获取当前路由信息
 const $route = useRoute();
+const userStore = useUserStore();
 
-// 过滤掉隐藏的路由
+// 过滤掉隐藏的路由，并根据用户角色过滤
 const visibleRoutes = computed(() => {
-	return routes.filter((route) => !route.meta?.hidden);
+	return routes.filter((route) => {
+		// 隐藏的路由不显示
+		if (route.meta?.hidden) return false;
+		
+		// 检查路由的角色要求
+		const requiredRoles = route.meta?.roles;
+		const userRole = userStore.userInfo?.userRole;
+		
+		// 如果路由没有设置角色要求，则显示
+		if (!requiredRoles) return true;
+		
+		// 如果用户角色满足路由要求，则显示
+		return requiredRoles.includes(userRole);
+	});
 });
 
 const handleOpen = (key, keyPath) => {

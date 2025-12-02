@@ -1,10 +1,68 @@
 import HomeView from "../components/HomeView.vue";
-import UserUpdateView from "@/view/user/UserUpdateView.vue";
-import LoginView from "@/view/user/UserLoginView.vue";
-import RegisterView from "@/view/user/UserRegisterView.vue";
-import ManageUserView from "@/view/user/ManageUser.vue";
-import ManageCategoryView from "@/view/category/ManageCategory.vue";
-import ManageItemView from "@/view/item/ManageItem.vue";
+import UserUpdateView from "@/view/UserUpdateView.vue";
+import LoginView from "@/view/UserLoginView.vue";
+import RegisterView from "@/view/UserRegisterView.vue";
+import ManageUserView from "@/view/admin/ManageUser.vue";
+import ManageCategoryView from "@/view/admin/category/ManageCategory.vue";
+import ManageItemView from "@/view/admin/item/ManageItem.vue";
+import ProductsView from "@/view/user/ProductsView.vue";
+// 管理员路由
+export const adminRoutes = [
+	{
+		path: "/user",
+		component: ManageUserView,
+		meta: {
+			title: "用户管理",
+			icon: "user",
+			hidden: false,
+			roles: [1], // 管理员权限
+		},
+	},
+	{
+		path: "/category",
+		component: ManageCategoryView,
+		meta: {
+			title: "商品类别管理",
+			icon: "Tickets",
+			hidden: false,
+			roles: [1], // 管理员权限
+		},
+	},
+	{
+		path: "/item",
+		component: ManageItemView,
+		meta: {
+			title: "商品管理",
+			icon: "Goods",
+			hidden: false,
+			roles: [1], // 管员权限
+		},
+	},
+];
+
+// 普通用户路由
+export const userRoutes = [
+	{
+		path: "/user/profile",
+		component: () => import("@/view/user/UserProfile.vue"),
+		meta: {
+			title: "个人资料",
+			icon: "user",
+			hidden: false,
+			roles: [0], // 普通用户权限
+		},
+	},
+	{
+		path: "/user/products",
+		component: ProductsView,
+		meta: {
+			title: "商品展示",
+			hidden: true,
+			roles: [0],
+		},
+	},
+	// 这里可以添加更多普通用户专属的路由
+];
 
 export const routes = [
 	{
@@ -45,48 +103,8 @@ export const routes = [
 			hidden: false,
 		},
 	},
-	{
-		path: "/user",
-		component: ManageUserView,
-		meta: {
-			title: "用户管理",
-			icon: "user",
-			hidden: false,
-		},
-	},
-	{
-		path: "/category",
-		component: ManageCategoryView,
-		meta: {
-			title: "商品类别管理",
-			icon: "Tickets",
-			hidden: false,
-		},
-	},
-	{
-		path: "/item",
-		component: ManageItemView,
-		meta: {
-			title: "商品管理",
-			icon: "Goods",
-			hidden: false,
-		},
-	},
-	// {
-	// 	path: "/item",
-	// 	component: ManageItemView,
-	// 	meta: {
-	// 		title: "商品管理",
-	// 		icon: "Goods",
-	// 		hidden: false,
-	// 	},
-	// 	children: [
-	// 		{
-	// 			icon: "Apple",
-	// 			title: "测试",
-	// 			path: "test",
-	// 			component: ManageUserView,
-	// 		},
-	// 	],
-	// },
+	// 管理员路由
+	...adminRoutes,
+	// 普通用户路由
+	...userRoutes,
 ];

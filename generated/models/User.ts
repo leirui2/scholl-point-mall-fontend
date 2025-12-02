@@ -9,6 +9,7 @@ export type User = {
     id?: number;
     isDelete?: number;
     phone?: string;
+    points?: number;
     updateTime?: string;
     userAccount?: string;
     userAvatar?: string;

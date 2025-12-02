@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { CategoryControllerService, CategoryQueryRequest } from "../../../generated";
+import { CategoryControllerService, CategoryQueryRequest } from "../../../../generated";
 import moment from "moment";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { Check, Close, Plus, Search } from "@element-plus/icons-vue";

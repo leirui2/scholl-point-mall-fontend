@@ -10,6 +10,7 @@ export type ItemCategoryVO = {
     id?: number;
     imageurl?: string;
     name?: string;
+    order_count?: number;
     price?: number;
     status?: number;
     stock?: number;

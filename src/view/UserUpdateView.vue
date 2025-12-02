@@ -99,8 +99,11 @@ import { reactive, ref, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { Plus, Check, Close } from "@element-plus/icons-vue";
 import type { UploadProps } from "element-plus";
-import { UserControllerService } from "../../../generated";
+import { UserControllerService } from "../../generated";
 import { useUserStore } from "@/stores/user";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const userStore = useUserStore();
 const form = reactive({
@@ -199,7 +202,7 @@ const resetForm = () => {
 		type: "warning",
 	}).then(() => {
 		// 这里添加重置逻辑
-		ElMessage.info("已取消修改");
+		router.back();
 	});
 };
 </script>

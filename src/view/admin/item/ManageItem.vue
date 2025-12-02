@@ -148,7 +148,7 @@
 
 					<el-col :span="24">
 						<el-form-item label="价格：" prop="price">
-							<el-input-number v-model="form.price" :precision="2" :step="0.1" :min="0" class="form-input" />
+							<el-input-number v-model="form.price" :step="0.1" :min="0" class="form-input" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="24">
@@ -194,7 +194,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { ItemControllerService, ItemQueryRequest, CategoryControllerService } from "../../../generated";
+import { ItemControllerService, ItemQueryRequest, CategoryControllerService } from "../../../../generated";
 import moment from "moment";
 import { ElMessage, ElMessageBox, type UploadProps } from "element-plus";
 import { Check, Close, Plus, Search } from "@element-plus/icons-vue";

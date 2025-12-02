@@ -41,7 +41,10 @@
 				<el-table-column property="userAccount" label="账号" width="100" show-overflow-tooltip />
 				<el-table-column property="userName" label="昵称" width="100" show-overflow-tooltip />
 				<el-table-column label="性别" width="60">
-					<template #default="scope">{{ scope.row.gender === 1 ? "男" : "女" }}</template>
+					<template #default="scope">
+						<el-icon v-if="scope.row.gender === 0" color="#FFC0CB" size="30"><Female /></el-icon>
+						<el-icon v-else color="#409efc"><Male /></el-icon>
+					</template>
 				</el-table-column>
 				<el-table-column property="email" label="邮箱" width="120" show-overflow-tooltip />
 				<el-table-column property="phone" label="手机号" width="80" show-overflow-tooltip />
@@ -50,7 +53,13 @@
 						<el-avatar :src="scope.row.userAvatar" />
 					</template>
 				</el-table-column>
-				<el-table-column property="userProfile" label="个人介绍" width="120" show-overflow-tooltip />
+				<el-table-column label="积分" width="80">
+					<template #default="scope">
+						{{ scope.row.points }}
+						<Financing size="18" />
+					</template>
+				</el-table-column>
+
 				<el-table-column label="状态" width="80">
 					<template #default="scope">
 						<el-tag type="success" v-if="scope.row.userStatus === 0">正常</el-tag>
@@ -63,7 +72,7 @@
 				<el-table-column label="创建日期" width="120">
 					<template #default="scope">{{ moment(scope.row.createTime).format("YYYY-MM-DD") }}</template>
 				</el-table-column>
-				<el-table-column label="操作" width="120">
+				<el-table-column label="操作" width="300">
 					<template #default="scope">
 						<div class="operation-buttons">
 							<el-button @click="reset(scope.row.id)" size="small">重置密码</el-button>
@@ -189,7 +198,9 @@ import { UserControllerService } from "../../../generated";
 import type { UserQueryRequest } from "../../../generated";
 import moment from "moment";
 import { ElMessage, ElMessageBox, type UploadProps } from "element-plus";
-import { Check, Close, Plus, Search } from "@element-plus/icons-vue";
+import { Check, Close, Female, Male, Plus, Search } from "@element-plus/icons-vue";
+//引入IconPark 的图标
+import { Financing } from "@icon-park/vue-next";
 
 const imageUrl = ref("");
 
@@ -223,6 +234,7 @@ interface User {
 	userAvatar: string;
 	userAccount: string;
 	userName: string;
+	points: number;
 	userProfile: string;
 	userPassword: string;
 	gender: number;

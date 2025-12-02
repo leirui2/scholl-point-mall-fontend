@@ -10,6 +10,7 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 
 const app = createApp(App);
+
 // 创建 Pinia 实例并添加持久化插件
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
