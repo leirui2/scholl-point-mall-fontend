@@ -6,9 +6,11 @@ import type { ApiResponse_boolean_ } from '../models/ApiResponse_boolean_';
 import type { ApiResponse_Category_ } from '../models/ApiResponse_Category_';
 import type { ApiResponse_long_ } from '../models/ApiResponse_long_';
 import type { ApiResponse_PageResult_Category_ } from '../models/ApiResponse_PageResult_Category_';
+import type { ApiResponse_PageResult_CategoryVO_ } from '../models/ApiResponse_PageResult_CategoryVO_';
 import type { CategoryAddRequest } from '../models/CategoryAddRequest';
 import type { CategoryQueryRequest } from '../models/CategoryQueryRequest';
 import type { CategoryUpdateRequest } from '../models/CategoryUpdateRequest';
+import type { HotCategoryQueryRequest } from '../models/HotCategoryQueryRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -93,6 +95,27 @@ export class CategoryControllerService {
             query: {
                 'id': id,
             },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * hotCategoryByPage
+     * @param hotCategoryQueryRequest hotCategoryQueryRequest
+     * @returns ApiResponse_PageResult_CategoryVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static hotCategoryByPageUsingPost(
+        hotCategoryQueryRequest: HotCategoryQueryRequest,
+    ): CancelablePromise<ApiResponse_PageResult_CategoryVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/category/hotCategoryByPage',
+            body: hotCategoryQueryRequest,
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

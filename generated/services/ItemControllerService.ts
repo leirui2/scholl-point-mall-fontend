@@ -8,6 +8,8 @@ import type { ApiResponse_ItemCategoryVO_ } from '../models/ApiResponse_ItemCate
 import type { ApiResponse_long_ } from '../models/ApiResponse_long_';
 import type { ApiResponse_PageResult_Item_ } from '../models/ApiResponse_PageResult_Item_';
 import type { ApiResponse_PageResult_ItemCategoryVO_ } from '../models/ApiResponse_PageResult_ItemCategoryVO_';
+import type { ApiResponse_PageResult_ItemVO_ } from '../models/ApiResponse_PageResult_ItemVO_';
+import type { HotItemQueryRequest } from '../models/HotItemQueryRequest';
 import type { ItemAddRequest } from '../models/ItemAddRequest';
 import type { ItemQueryRequest } from '../models/ItemQueryRequest';
 import type { ItemUpdateRequest } from '../models/ItemUpdateRequest';
@@ -82,6 +84,27 @@ export class ItemControllerService {
         });
     }
     /**
+     * hotListItemByPage
+     * @param hotItemQueryRequest hotItemQueryRequest
+     * @returns ApiResponse_PageResult_ItemVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static hotListItemByPageUsingPost(
+        hotItemQueryRequest: HotItemQueryRequest,
+    ): CancelablePromise<ApiResponse_PageResult_ItemVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/item/hotListItemByPage',
+            body: hotItemQueryRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
      * listItemByPage
      * @param itemQueryRequest itemQueryRequest
      * @returns ApiResponse_PageResult_Item_ OK
@@ -94,6 +117,27 @@ export class ItemControllerService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/item/listItemByPage',
+            body: itemQueryRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * listItemByPageUser
+     * @param itemQueryRequest itemQueryRequest
+     * @returns ApiResponse_PageResult_ItemVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static listItemByPageUserUsingPost(
+        itemQueryRequest: ItemQueryRequest,
+    ): CancelablePromise<ApiResponse_PageResult_ItemVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/item/listItemByPageUser',
             body: itemQueryRequest,
             errors: {
                 401: `Unauthorized`,
