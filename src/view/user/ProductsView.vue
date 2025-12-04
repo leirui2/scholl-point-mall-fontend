@@ -41,18 +41,53 @@
 		</div>
 	</div>
 
-	<div class="wbar title_more">
+	<div class="title_more">
 		<div class="title_en">-Popularity Series-</div>
 		<div class="title_ch">人气系列</div>
 		<div class="title_page">一</div>
 		<div style="align-content: center; text-align: center">
-			<el-tag v-for="item in hotCategoryData" :key="item.id" size="large" class="hotTag" @click="gotoItem(item.id || 0)">
+			<el-tag
+				v-for="item in hotCategoryData"
+				:key="item.id"
+				size="large"
+				class="hotTag"
+				:class="{ 'hotTag-active': selectedCategoryId === item.id }"
+				@click="toggleCategory(item.id || 0)"
+			>
 				{{ item.name }}
 			</el-tag>
 		</div>
 	</div>
 
-	<div class="hot_shop_tabs">热门系列</div>
+	<div class="hot_shop_tabs">
+		<div class="product-grid">
+			<el-card v-for="item in hotCategoryItemData" :key="item.id" class="product-card2" shadow="hover" @click="gotoItem(item.id || 0)">
+				<div class="product-image-container">
+					<el-image :src="item.imageurl" class="product-image" fit="cover">
+						<template #error>
+							<div class="image-error">
+								<el-icon><Picture /></el-icon>
+							</div>
+						</template>
+					</el-image>
+				</div>
+				<div class="product-info">
+					<div class="product-info-content">
+						<div class="product-price-section">
+							<div class="product-price">
+								<span class="price-symbol">¥</span>
+								<span class="price-value">{{ item.price || "0" }}</span>
+							</div>
+						</div>
+						<div class="product-details-section">
+							<h3 class="product-name">{{ item.name }}</h3>
+							<p class="product-desc" v-if="item.description">{{ item.description }}</p>
+						</div>
+					</div>
+				</div>
+			</el-card>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -64,13 +99,24 @@ import {
 	type HotItemQueryRequest,
 	Item,
 	ItemControllerService,
+	ItemVO,
 } from "../../../generated";
-import { ElMessage, ElMessageBox } from "element-plus";
+
 import { Picture } from "@element-plus/icons-vue";
+
+//引入路由
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 let hotItemData = ref<Item[]>([]);
 
 let hotCategoryData = ref<Category[]>();
+
+let hotCategoryItemData = ref<ItemVO[]>();
+
+// 新增：用于跟踪选中的分类ID
+const selectedCategoryId = ref<number | null>(null);
 
 const hotItemLine = reactive<HotItemQueryRequest>({
 	num: 10, //热门商品数量
@@ -90,24 +136,60 @@ onMounted(() => {
 	loadHotCategory();
 });
 
-//获取热门推荐商品
+//获取所有商品中的热门推荐商品
 const loadHotItem = async () => {
 	const res = await ItemControllerService.hotListItemByPageUsingPost(hotItemLine);
 	if (res.code === 0) {
 		hotItemData.value = res.data.records;
 	}
 };
+
 //获取人气商品类别
 const loadHotCategory = async () => {
 	const res = await CategoryControllerService.hotCategoryByPageUsingPost(hotCategoryList);
 	if (res.code === 0) {
 		hotCategoryData.value = res.data.records;
+		// 如果有分类数据，默认选中第一个分类
+		if (hotCategoryData.value && hotCategoryData.value.length > 0) {
+			const firstCategoryId = hotCategoryData.value[0].id || 0;
+			selectedCategoryId.value = firstCategoryId;
+			hotItemLine.categoryId = firstCategoryId;
+			// 加载第一个分类的商品数据
+			await loadCategoryItem();
+		}
 	}
+};
+
+//获取指定类别的热门推荐商品
+const loadCategoryItem = async () => {
+	const res = await ItemControllerService.hotListItemByPageUsingPost(hotItemLine);
+	if (res.code === 0) {
+		hotCategoryItemData.value = res.data.records;
+	}
+};
+
+// 新增：切换分类选中状态
+const toggleCategory = (id: number) => {
+	if (selectedCategoryId.value === id) {
+		// 如果点击的是已选中的分类，则取消选中
+		selectedCategoryId.value = null;
+	} else {
+		// 否则选中该分类
+		selectedCategoryId.value = id;
+	}
+	// 调用原来的跳转方法
+	hotItemLine.categoryId = id;
+	loadCategoryItem();
 };
 
 //点击商品跳转到商品详情页
 const gotoItem = (id: number) => {
-	alert(id);
+	router.push({
+		path: "/gotoItem",
+		query: {
+			itemId: id,
+		},
+	});
 };
 </script>
 
@@ -152,7 +234,16 @@ const gotoItem = (id: number) => {
 
 .product-card {
 	width: 280px;
-	height: 360px;
+	height: 330px;
+	border-radius: 12px;
+	overflow: hidden;
+	transition: all 0.3s ease;
+	cursor: pointer;
+}
+
+.product-card2 {
+	width: 250px;
+	height: 330px;
 	border-radius: 12px;
 	overflow: hidden;
 	transition: all 0.3s ease;
@@ -211,11 +302,12 @@ const gotoItem = (id: number) => {
 
 .product-info-content {
 	display: flex;
-	flex-grow: 1;
+	flex-grow: 0;
 }
 
 .product-price-section {
-	flex: 0 0 80px;
+	/* 减小左侧价格区域的宽度，从80px改为60px */
+	flex: 0 0 40px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -306,6 +398,18 @@ const gotoItem = (id: number) => {
 	background-color: #f5f7fa;
 	border: 1px solid #b6a597;
 	color: #b6a597;
+	/* 添加过渡效果 */
+	transition: all 0.3s ease;
+	cursor: pointer;
+}
+
+/* 新增：选中状态的样式 */
+.hotTag-active {
+	background-color: #b6a597;
+	color: white;
+	border-color: #b6a597;
+	transform: scale(1.05);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .hot_shop_tabs {
@@ -315,6 +419,14 @@ const gotoItem = (id: number) => {
 	background-color: #6c757d;
 	width: auto;
 	height: 80px;
+}
+
+/* 新增：商品网格布局 */
+.product-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 20px;
+	padding: 20px;
 }
 
 /* 覆盖Element Plus轮播图样式 */
@@ -348,5 +460,30 @@ const gotoItem = (id: number) => {
 
 :deep(.el-carousel__indicator.is-active) {
 	background-color: #409eff;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+	.product-grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+@media (max-width: 992px) {
+	.product-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (max-width: 768px) {
+	.product-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 480px) {
+	.product-grid {
+		grid-template-columns: 1fr;
+	}
 }
 </style>

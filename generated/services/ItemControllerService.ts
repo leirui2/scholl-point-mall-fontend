@@ -68,7 +68,7 @@ export class ItemControllerService {
      * @throws ApiError
      */
     public static getItemByIdUsingGet(
-        id?: number,
+        id?: string,
     ): CancelablePromise<ApiResponse_ItemCategoryVO_> {
         return __request(OpenAPI, {
             method: 'GET',

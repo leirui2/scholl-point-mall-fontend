@@ -4,7 +4,7 @@
 /* eslint-disable */
 export type Item = {
     categoryid?: number;
-    createtime?: string;
+    createTime?: string;
     description?: string;
     id?: number;
     imageurl?: string;
@@ -15,6 +15,6 @@ export type Item = {
     status?: number;
     stock?: number;
     unit?: string;
-    updatetime?: string;
+    updateTime?: string;
 };
 

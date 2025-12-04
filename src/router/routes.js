@@ -6,6 +6,9 @@ import ManageUserView from "@/view/admin/ManageUser.vue";
 import ManageCategoryView from "@/view/admin/category/ManageCategory.vue";
 import ManageItemView from "@/view/admin/item/ManageItem.vue";
 import ProductsView from "@/view/user/ProductsView.vue";
+import ItemView from "@/view/user/item/purchaseItemView.vue";
+import ordersView from "@/view/user/order/ordersView.vue";
+
 // 管理员路由
 export const adminRoutes = [
 	{
@@ -61,6 +64,15 @@ export const userRoutes = [
 			roles: [0],
 		},
 	},
+	{
+		path: "/user/orders",
+		component: ordersView,
+		meta: {
+			title: "下单记录",
+			hidden: true,
+			roles: [0],
+		},
+	},
 	// 这里可以添加更多普通用户专属的路由
 ];
 
@@ -103,6 +115,16 @@ export const routes = [
 			hidden: false,
 		},
 	},
+	{
+		path: "/gotoItem",
+		component: ItemView,
+		meta: {
+			title: "商品详情",
+			icon: "House",
+			hidden: false,
+		},
+	},
+
 	// 管理员路由
 	...adminRoutes,
 	// 普通用户路由
