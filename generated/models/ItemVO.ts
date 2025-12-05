@@ -8,7 +8,9 @@ export type ItemVO = {
     id?: number;
     imageurl?: string;
     name?: string;
+    orderCount?: number;
     price?: number;
+    stock?: number;
     unit?: string;
 };
 

@@ -10,7 +10,7 @@ export type Item = {
     imageurl?: string;
     isDelete?: number;
     name?: string;
-    order_count?: number;
+    orderCount?: number;
     price?: number;
     status?: number;
     stock?: number;

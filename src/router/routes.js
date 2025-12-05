@@ -8,6 +8,7 @@ import ManageItemView from "@/view/admin/item/ManageItem.vue";
 import ProductsView from "@/view/user/ProductsView.vue";
 import ItemView from "@/view/user/item/purchaseItemView.vue";
 import ordersView from "@/view/user/order/ordersView.vue";
+import itemsView from "@/view/user/item/itemsView.vue";
 
 // 管理员路由
 export const adminRoutes = [
@@ -69,6 +70,15 @@ export const userRoutes = [
 		component: ordersView,
 		meta: {
 			title: "下单记录",
+			hidden: true,
+			roles: [0],
+		},
+	},
+	{
+		path: "/user/items",
+		component: itemsView,
+		meta: {
+			title: "商品浏览",
 			hidden: true,
 			roles: [0],
 		},

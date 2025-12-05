@@ -22,6 +22,13 @@
 						<el-descriptions-item label="性别">{{ genderText }}</el-descriptions-item>
 						<el-descriptions-item label="手机号">{{ userStore.userInfo?.phone || "未填写" }}</el-descriptions-item>
 						<el-descriptions-item label="邮箱">{{ userStore.userInfo?.email || "未填写" }}</el-descriptions-item>
+						<el-descriptions-item label="剩余积分">
+							<template #default="">
+								{{ userStore.userInfo?.points || 0 }}
+								<Financing size="18" />
+							</template>
+						</el-descriptions-item>
+
 						<el-descriptions-item label="个人简介">{{ userStore.userInfo?.userProfile || "暂无简介" }}</el-descriptions-item>
 						<el-descriptions-item label="注册时间">{{
 							moment(userStore.userInfo?.createTime).format("YYYY-MM-DD")
@@ -42,6 +49,7 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import moment from "moment";
+import { Financing } from "@icon-park/vue-next";
 const router = useRouter();
 const userStore = useUserStore();
 

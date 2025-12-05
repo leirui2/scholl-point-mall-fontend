@@ -9,9 +9,9 @@
 				<div class="nav-links">
 					<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
 						<el-menu-item index="/">首页</el-menu-item>
-						<el-menu-item index="/user/products">商品浏览</el-menu-item>
+						<el-menu-item index="/user/products">热门推荐</el-menu-item>
+						<el-menu-item index="/user/items">商品浏览</el-menu-item>
 						<el-menu-item index="/user/orders">我的订单</el-menu-item>
-						<el-menu-item index="/user/points">积分详情</el-menu-item>
 					</el-menu>
 				</div>
 				<div class="user-actions">

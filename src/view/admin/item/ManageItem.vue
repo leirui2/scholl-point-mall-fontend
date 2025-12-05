@@ -322,7 +322,7 @@ const addDialog = () => {
 };
 
 //打开修改Dialog
-const updateDialog = async (id: number) => {
+const updateDialog = async (id: string) => {
 	title.value = "修改商品";
 	isAdding.value = false;
 	dialogFormVisible.value = true;

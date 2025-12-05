@@ -37,27 +37,6 @@ export class CategoryControllerService {
         });
     }
     /**
-     * listCategoryByPage
-     * @param categoryQueryRequest categoryQueryRequest
-     * @returns ApiResponse_PageResult_Category_ OK
-     * @returns any Created
-     * @throws ApiError
-     */
-    public static listCategoryByPageUsingPost(
-        categoryQueryRequest: CategoryQueryRequest,
-    ): CancelablePromise<ApiResponse_PageResult_Category_ | any> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/category/admin/listCategoryByPage',
-            body: categoryQueryRequest,
-            errors: {
-                401: `Unauthorized`,
-                403: `Forbidden`,
-                404: `Not Found`,
-            },
-        });
-    }
-    /**
      * deleteCategory
      * @param id id
      * @returns ApiResponse_boolean_ OK
@@ -116,6 +95,27 @@ export class CategoryControllerService {
             method: 'POST',
             url: '/api/category/hotCategoryByPage',
             body: hotCategoryQueryRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * listCategoryByPage
+     * @param categoryQueryRequest categoryQueryRequest
+     * @returns ApiResponse_PageResult_Category_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static listCategoryByPageUsingPost(
+        categoryQueryRequest: CategoryQueryRequest,
+    ): CancelablePromise<ApiResponse_PageResult_Category_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/category/listCategoryByPage',
+            body: categoryQueryRequest,
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
