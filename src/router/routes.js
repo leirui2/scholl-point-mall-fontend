@@ -9,6 +9,8 @@ import ProductsView from "@/view/user/ProductsView.vue";
 import ItemView from "@/view/user/item/purchaseItemView.vue";
 import ordersView from "@/view/user/order/ordersView.vue";
 import itemsView from "@/view/user/item/itemsView.vue";
+import ManageSignInRuleView from "@/view/admin/signIn/ManageSignInRuleView.vue";
+import SignInLogView from "@/view/admin/signIn/SignInLog.vue";
 
 // 管理员路由
 export const adminRoutes = [
@@ -40,6 +42,26 @@ export const adminRoutes = [
 			icon: "Goods",
 			hidden: false,
 			roles: [1], // 管员权限
+		},
+	},
+	{
+		path: "/signInManage",
+		component: ManageSignInRuleView,
+		meta: {
+			title: "签到积分奖励管理",
+			icon: "Coin",
+			hidden: false,
+			roles: [1],
+		},
+	},
+	{
+		path: "/signinLog",
+		component: SignInLogView,
+		meta: {
+			title: "签到日志",
+			icon: "Document",
+			hidden: false,
+			roles: [1],
 		},
 	},
 ];
@@ -131,7 +153,7 @@ export const routes = [
 		meta: {
 			title: "商品详情",
 			icon: "House",
-			hidden: false,
+			hidden: true,
 		},
 	},
 

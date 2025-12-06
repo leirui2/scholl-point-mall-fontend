@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UserUpdateVO = {
+    consecutiveSignInDays?: number;
     email?: string;
     gender?: number;
     id?: number;

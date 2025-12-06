@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type User = {
+    consecutiveSignInDays?: number;
     createTime?: string;
     email?: string;
     gender?: number;
