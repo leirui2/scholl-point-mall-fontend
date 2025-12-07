@@ -194,8 +194,8 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { UserControllerService } from "../../../generated";
-import type { UserQueryRequest } from "../../../generated";
+import { UserControllerService } from "../../../../generated";
+import type { UserQueryRequest } from "../../../../generated";
 import moment from "moment";
 import { ElMessage, ElMessageBox, type UploadProps } from "element-plus";
 import { Check, Close, Female, Male, Plus, Search } from "@element-plus/icons-vue";

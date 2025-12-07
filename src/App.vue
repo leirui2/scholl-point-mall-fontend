@@ -1,8 +1,8 @@
 <script>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import ContainerView from "@/layout/AdminLayout.vue";
-import UserLayout from "@/layout/UserLayout.vue";
+import ContainerView from "@/view/admin/layout/AdminLayout.vue";
+import UserLayout from "@/view/user/UserLayout.vue";
 import LoginView from "@/view/UserLoginView.vue";
 import RegisterView from "@/view/UserRegisterView.vue";
 import { useUserStore } from "@/stores/user";

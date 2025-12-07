@@ -96,9 +96,12 @@ const onSubmit = async () => {
 				userAccount: form.userAccount,
 				userPassword: form.userPassword,
 			});
-
-			// 跳转到首页
-			await router.push("/Home");
+			//如果是管理员
+			if (userStore.userInfo.userRole === 1) {
+				await router.push("/Home");
+			} else {
+				await router.push("/user/Home");
+			}
 		} else {
 			ElMessage({
 				message: res.message || "登录失败",

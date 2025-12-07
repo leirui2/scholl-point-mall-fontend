@@ -1,6 +1,6 @@
 <script setup>
-import LeftMenu from "@/layout/LeftMenu.vue";
-import HeaderView from "@/layout/HeaderView.vue";
+import LeftMenu from "@/view/admin/layout/LeftMenu.vue";
+import HeaderView from "@/view/admin/layout/HeaderView.vue";
 </script>
 
 <template>

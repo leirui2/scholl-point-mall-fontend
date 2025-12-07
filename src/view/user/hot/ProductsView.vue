@@ -100,7 +100,7 @@ import {
 	Item,
 	ItemControllerService,
 	ItemVO,
-} from "../../../generated";
+} from "../../../../generated";
 
 import { Picture } from "@element-plus/icons-vue";
 

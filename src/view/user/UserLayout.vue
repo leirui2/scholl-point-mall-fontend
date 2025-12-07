@@ -8,13 +8,17 @@
 				</div>
 				<div class="nav-links">
 					<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
-						<el-menu-item index="/">首页</el-menu-item>
+						<el-menu-item index="/user/Home">首页</el-menu-item>
 						<el-menu-item index="/user/products">热门推荐</el-menu-item>
 						<el-menu-item index="/user/items">商品浏览</el-menu-item>
 						<el-menu-item index="/user/orders">我的订单</el-menu-item>
 					</el-menu>
 				</div>
 				<div class="user-actions">
+					<el-button type="primary" @click="router.push('/user/gotoSignIn')" style="margin-right: 20px" v-if="!isSignInToday">
+						<el-icon><CircleCheckFilled /></el-icon>
+						<span>签到</span>
+					</el-button>
 					<el-dropdown>
 						<div class="user-info">
 							<el-avatar :size="32" :src="userStore.userAvatar" />
@@ -22,9 +26,10 @@
 						</div>
 						<template #dropdown>
 							<el-dropdown-menu>
-								<el-dropdown-item @click="goToProfile">个人资料</el-dropdown-item>
-								<el-dropdown-item @click="goToUpdatePassword">修改密码</el-dropdown-item>
-								<el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
+								<el-dropdown-item :icon="View" @click="goToProfile">个人资料</el-dropdown-item>
+								<el-dropdown-item :icon="Edit" @click="goToUpdatePassword">修改密码</el-dropdown-item>
+								<el-dropdown-item :icon="User" @click="gotoSignIn">去签到</el-dropdown-item>
+								<el-dropdown-item :icon="SwitchButton" @click="handleLogout">退出登录</el-dropdown-item>
 							</el-dropdown-menu>
 						</template>
 					</el-dropdown>
@@ -70,13 +75,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { ElMessage } from "element-plus";
 
-import { UserControllerService } from "../../generated";
+import { SignInRecordControllerService, UserControllerService } from "../../../generated";
 import type { FormItemRule } from "element-plus";
+import { CircleCheckFilled, SwitchButton, User, View } from "@element-plus/icons-vue";
+import { Edit } from "@icon-park/vue-next";
 
 const router = useRouter();
 const route = useRoute();
@@ -91,6 +98,9 @@ const dialogForm = reactive({
 	userPassword: "",
 	confirmPassword: "",
 });
+
+//今天是否已经签到
+const isSignInToday = ref(false);
 
 // 添加表单验证规则
 const rules = {
@@ -149,13 +159,28 @@ const resetForm = () => {
 	}
 };
 
+//判断今天是否已经登录过
+const isSignIn = async () => {
+	const res = await SignInRecordControllerService.isSignInUsingPost();
+	if (res.code === 0 && res.data == true) {
+		isSignInToday.value = true;
+	} else if (res.code === 0 && res.data == false) {
+		isSignInToday.value = false;
+	}
+};
+// 监听路由变化
+watch(route, () => {
+	isSignIn();
+});
+
 // 监听路由变化，更新选中的菜单项
 onMounted(() => {
+	isSignIn();
 	activeIndex.value = route.path;
 });
 
 // 处理菜单选择
-const handleSelect = (key) => {
+const handleSelect = (key: never) => {
 	activeIndex.value = key;
 	router.push(key);
 };
@@ -170,6 +195,9 @@ const goToUpdatePassword = () => {
 	dialogFormVisible.value = true;
 };
 
+const gotoSignIn = () => {
+	router.push("/user/gotoSignIn");
+};
 // 退出登录
 const handleLogout = async () => {
 	await userStore.logout(() => {
@@ -238,6 +266,7 @@ const handleLogout = async () => {
 	background-color: #333;
 	color: white;
 	text-align: center;
-	padding: 20px 0;
+	justify-content: center;
+	height: 40px;
 }
 </style>

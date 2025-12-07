@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ApiResponse_boolean_ } from '../models/ApiResponse_boolean_';
 import type { ApiResponse_int_ } from '../models/ApiResponse_int_';
 import type { ApiResponse_PageResult_SignInRecord_ } from '../models/ApiResponse_PageResult_SignInRecord_';
 import type { SignInRecordQueryRequest } from '../models/SignInRecordQueryRequest';
@@ -9,6 +10,44 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class SignInRecordControllerService {
+    /**
+     * isSignIn
+     * @returns ApiResponse_boolean_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static isSignInUsingPost(): CancelablePromise<ApiResponse_boolean_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/signInRecord/isSignIn',
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * listSignInMyRecordByPage
+     * @param signInRecordQueryRequest signInRecordQueryRequest
+     * @returns ApiResponse_PageResult_SignInRecord_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static listSignInMyRecordByPageUsingPost(
+        signInRecordQueryRequest: SignInRecordQueryRequest,
+    ): CancelablePromise<ApiResponse_PageResult_SignInRecord_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/signInRecord/listSignInMyRecordByPage',
+            body: signInRecordQueryRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
     /**
      * listSignInRecordByPage
      * @param signInRecordQueryRequest signInRecordQueryRequest

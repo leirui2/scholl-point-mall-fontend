@@ -10,6 +10,7 @@
 							<el-dropdown-menu>
 								<el-dropdown-item :icon="User" @click="goUserCenter"> 个人中心</el-dropdown-item>
 								<el-dropdown-item :icon="Setting" @click="goUpdateUser">账户设置</el-dropdown-item>
+
 								<el-dropdown-item :icon="Setting" @click="dialogFormVisible = true">密码修改</el-dropdown-item>
 							</el-dropdown-menu>
 						</template>
@@ -66,7 +67,7 @@ import { ElMessage } from "element-plus";
 import type { FormItemRule } from "element-plus"; // 导入Element Plus的表单规则类型
 
 import { Setting, User } from "@element-plus/icons-vue";
-import { UserControllerService } from "../../generated";
+import { UserControllerService } from "../../../../generated";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -148,6 +149,7 @@ const goUserCenter = () => {
 const goUpdateUser = () => {
 	router.push("/user/update");
 };
+
 // 实现密码修改确认函数
 const handleConfirmUpdatePassword = async () => {
 	// 表单验证

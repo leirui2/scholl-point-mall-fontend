@@ -47,7 +47,7 @@
 <script setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { useUserStore } from "@/stores/user";
+import { useUserStore } from "@/stores/user.js";
 import moment from "moment";
 import { Financing } from "@icon-park/vue-next";
 const router = useRouter();

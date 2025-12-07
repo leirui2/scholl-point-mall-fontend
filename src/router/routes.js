@@ -1,16 +1,18 @@
-import HomeView from "../components/HomeView.vue";
+import HomeView from "../view/admin/HomeView.vue";
 import UserUpdateView from "@/view/UserUpdateView.vue";
 import LoginView from "@/view/UserLoginView.vue";
 import RegisterView from "@/view/UserRegisterView.vue";
-import ManageUserView from "@/view/admin/ManageUser.vue";
+import ManageUserView from "@/view/admin/manageUser/ManageUser.vue";
 import ManageCategoryView from "@/view/admin/category/ManageCategory.vue";
 import ManageItemView from "@/view/admin/item/ManageItem.vue";
-import ProductsView from "@/view/user/ProductsView.vue";
+import ProductsView from "@/view/user/hot/ProductsView.vue";
 import ItemView from "@/view/user/item/purchaseItemView.vue";
 import ordersView from "@/view/user/order/ordersView.vue";
 import itemsView from "@/view/user/item/itemsView.vue";
 import ManageSignInRuleView from "@/view/admin/signIn/ManageSignInRuleView.vue";
 import SignInLogView from "@/view/admin/signIn/SignInLog.vue";
+import SignInView from "@/view/user/signIn/SignInView.vue";
+import userHomeView from "@/view/user/UserHome.vue";
 
 // 管理员路由
 export const adminRoutes = [
@@ -64,13 +66,23 @@ export const adminRoutes = [
 			roles: [1],
 		},
 	},
+	{
+		path: "/Home",
+		component: HomeView,
+		meta: {
+			title: "首页",
+			icon: "House",
+			hidden: true,
+			roles: [1],
+		},
+	},
 ];
 
 // 普通用户路由
 export const userRoutes = [
 	{
 		path: "/user/profile",
-		component: () => import("@/view/user/UserProfile.vue"),
+		component: () => import("@/view/user/update/UserProfile.vue"),
 		meta: {
 			title: "个人资料",
 			icon: "user",
@@ -105,6 +117,26 @@ export const userRoutes = [
 			roles: [0],
 		},
 	},
+	{
+		path: "/user/gotoSignIn",
+		component: SignInView,
+		meta: {
+			title: "签到",
+			hidden: true,
+			roles: [0],
+		},
+	},
+	{
+		path: "/user/Home",
+		component: userHomeView,
+		meta: {
+			title: "首页",
+			icon: "House",
+			hidden: false,
+			roles: [0],
+		},
+	},
+
 	// 这里可以添加更多普通用户专属的路由
 ];
 
@@ -138,15 +170,7 @@ export const routes = [
 			hidden: true,
 		},
 	},
-	{
-		path: "/Home",
-		component: HomeView,
-		meta: {
-			title: "首页",
-			icon: "House",
-			hidden: false,
-		},
-	},
+
 	{
 		path: "/gotoItem",
 		component: ItemView,

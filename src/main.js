@@ -9,6 +9,9 @@ import "element-plus/dist/index.css";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 
+//引入中文语言包
+import zhCn from "element-plus/es/locale/lang/zh-cn";
+
 const app = createApp(App);
 
 // 创建 Pinia 实例并添加持久化插件
@@ -19,7 +22,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 	app.component(key, component);
 }
 app.use(router);
-app.use(ElementPlus);
+// app.use(ElementPlus);
+app.use(ElementPlus, { locale: zhCn });
 app.use(ElMessage);
 app.use(pinia); // 使用 Pinia
 app.mount("#app");
