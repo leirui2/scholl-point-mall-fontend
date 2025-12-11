@@ -49,11 +49,12 @@
 						<div class="item-info">
 							<h3 class="item-name">{{ order.itemName }}</h3>
 							<p class="item-desc">{{ order.item?.description || "暂无描述" }}</p>
-							<div class="item-price">¥{{ order.item?.pointPrice || 0 }} / {{ order.item?.unit || "件" }}</div>
+							<div class="item-price">{{ order.item?.pointPrice || 0 }} 积分 / {{ order.item?.unit || "件" }}</div>
 						</div>
 						<div class="order-info">
 							<div class="order-quantity">数量：{{ order.num }} {{ order.item?.unit || "件" }}</div>
-							<div class="order-total">总价：¥{{ ((order.item?.pointPrice || 0) * (order.num || 0)).toFixed(2) }}</div>
+							<div class="order-total" v-if="order.paymentAmount != null">总价：¥{{ order.paymentAmount.toFixed(2) }} 元</div>
+							<div class="order-total" v-else>消费：{{ (order.item?.pointPrice || 0) * (order.num || 0) }} 积分</div>
 						</div>
 					</div>
 				</el-card>

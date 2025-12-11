@@ -11,6 +11,9 @@ export type PurchaseRecordListVO = {
     itemName?: string;
     num?: number;
     orderNumber?: string;
+    paymentAmount?: number;
+    paymentStatus?: number;
+    paymentTime?: string;
     userId?: number;
 };
 
