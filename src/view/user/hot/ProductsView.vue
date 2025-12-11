@@ -26,7 +26,7 @@
 								<div class="product-price-section">
 									<div class="product-price">
 										<span class="price-symbol">¥</span>
-										<span class="price-value">{{ item.price || "0" }}</span>
+										<span class="price-value">{{ item.pointPrice || "0" }}</span>
 									</div>
 								</div>
 								<div class="product-details-section">
@@ -76,7 +76,7 @@
 						<div class="product-price-section">
 							<div class="product-price">
 								<span class="price-symbol">¥</span>
-								<span class="price-value">{{ item.price || "0" }}</span>
+								<span class="price-value">{{ item.pointPrice || "0" }}</span>
 							</div>
 						</div>
 						<div class="product-details-section">

@@ -32,9 +32,9 @@
 					<el-col :span="8">
 						<el-form-item label="价格区间">
 							<div class="price-range">
-								<el-input-number v-model="searchForm.minPrice" :min="0" placeholder="最低价" controls-position="right" />
+								<el-input-number v-model="searchForm.minPointPrice" :min="0" placeholder="最低价" controls-position="right" />
 								<span class="separator">-</span>
-								<el-input-number v-model="searchForm.maxPrice" :min="0" placeholder="最高价" controls-position="right" />
+								<el-input-number v-model="searchForm.maxPointPrice" :min="0" placeholder="最高价" controls-position="right" />
 							</div>
 						</el-form-item>
 					</el-col>
@@ -78,7 +78,7 @@
 						</div>
 						<div class="item-info">
 							<h3 class="item-name" :title="item.name">{{ item.name }}</h3>
-							<div class="item-price">¥{{ item.price }}</div>
+							<div class="item-price">¥{{ item.pointPrice }}</div>
 							<div class="item-stock">库存: {{ item.stock }}</div>
 						</div>
 					</el-card>
@@ -139,8 +139,8 @@ const searchForm = reactive<ItemQueryRequest>({
 	name: undefined,
 	categoryName: undefined,
 	categoryid: undefined,
-	minPrice: undefined,
-	maxPrice: undefined,
+	minPointPrice: undefined,
+	maxPointPrice: undefined,
 	minStock: undefined,
 	maxStock: undefined,
 	current: 1,
@@ -190,8 +190,8 @@ const handleSearch = () => {
 const resetSearch = () => {
 	searchForm.name = undefined;
 	searchForm.categoryName = undefined;
-	searchForm.minPrice = undefined;
-	searchForm.maxPrice = undefined;
+	searchForm.minPointPrice = undefined;
+	searchForm.maxPointPrice = undefined;
 	searchForm.minStock = undefined;
 	searchForm.maxStock = undefined;
 	pagination.current = 1;

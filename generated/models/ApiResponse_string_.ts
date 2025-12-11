@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PurchaseItemRequest = {
-    itemId?: number;
-    num?: number;
-    paymentType?: number;
+export type ApiResponse_string_ = {
+    code?: number;
+    data?: string;
+    message?: string;
 };
 

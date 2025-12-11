@@ -22,7 +22,9 @@ export type { ApiResponse_PageResult_ItemVO_ } from './models/ApiResponse_PageRe
 export type { ApiResponse_PageResult_PurchaseRecordListVO_ } from './models/ApiResponse_PageResult_PurchaseRecordListVO_';
 export type { ApiResponse_PageResult_SignInRecord_ } from './models/ApiResponse_PageResult_SignInRecord_';
 export type { ApiResponse_PageResult_User_ } from './models/ApiResponse_PageResult_User_';
+export type { ApiResponse_PayResultDTO_ } from './models/ApiResponse_PayResultDTO_';
 export type { ApiResponse_SignInRule_ } from './models/ApiResponse_SignInRule_';
+export type { ApiResponse_string_ } from './models/ApiResponse_string_';
 export type { ApiResponse_User_ } from './models/ApiResponse_User_';
 export type { ApiResponse_UserLoginVO_ } from './models/ApiResponse_UserLoginVO_';
 export type { ApiResponse_UserUpdateVO_ } from './models/ApiResponse_UserUpdateVO_';
@@ -48,6 +50,7 @@ export type { PageResult_ItemVO_ } from './models/PageResult_ItemVO_';
 export type { PageResult_PurchaseRecordListVO_ } from './models/PageResult_PurchaseRecordListVO_';
 export type { PageResult_SignInRecord_ } from './models/PageResult_SignInRecord_';
 export type { PageResult_User_ } from './models/PageResult_User_';
+export type { PayResultDTO } from './models/PayResultDTO';
 export type { PurchaseItemRequest } from './models/PurchaseItemRequest';
 export type { PurchaseRecordListVO } from './models/PurchaseRecordListVO';
 export type { PurchaseRecordQueryRequest } from './models/PurchaseRecordQueryRequest';
@@ -65,6 +68,7 @@ export type { UserRegisterRequest } from './models/UserRegisterRequest';
 export type { UserUpdateRequest } from './models/UserUpdateRequest';
 export type { UserUpdateVO } from './models/UserUpdateVO';
 
+export { AliPayControllerService } from './services/AliPayControllerService';
 export { CategoryControllerService } from './services/CategoryControllerService';
 export { FileDetailControllerService } from './services/FileDetailControllerService';
 export { ItemControllerService } from './services/ItemControllerService';

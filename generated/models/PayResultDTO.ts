@@ -2,9 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PurchaseItemRequest = {
-    itemId?: number;
-    num?: number;
-    paymentType?: number;
+export type PayResultDTO = {
+    itemName?: string;
+    orderNumber?: string;
+    qrCodeUrl?: string;
+    totalAmount?: number;
 };
 

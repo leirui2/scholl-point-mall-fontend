@@ -7,7 +7,7 @@ export type ItemAddRequest = {
     description?: string;
     imageurl?: string;
     name?: string;
-    price?: number;
+    pointPrice?: number;
     stock?: number;
     unit?: string;
 };

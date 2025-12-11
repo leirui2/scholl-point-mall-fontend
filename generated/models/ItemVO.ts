@@ -9,7 +9,7 @@ export type ItemVO = {
     imageurl?: string;
     name?: string;
     orderCount?: number;
-    price?: number;
+    pointPrice?: number;
     stock?: number;
     unit?: string;
 };

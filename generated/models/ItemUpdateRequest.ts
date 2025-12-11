@@ -8,7 +8,7 @@ export type ItemUpdateRequest = {
     id?: number;
     imageurl?: string;
     name?: string;
-    price?: number;
+    pointPrice?: number;
     stock?: number;
     unit?: string;
 };

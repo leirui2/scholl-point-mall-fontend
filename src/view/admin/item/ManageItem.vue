@@ -46,8 +46,8 @@
 						<el-avatar :src="scope.row.imageurl" />
 					</template>
 				</el-table-column>
-				<el-table-column property="categoryName" label="类别" width="80" show-overflow-tooltip />
-				<el-table-column property="price" label="价格" width="80" />
+				<el-table-column property="categoryName" label="类别" width="100" show-overflow-tooltip />
+				<el-table-column property="pointPrice" label="积分价格" width="80" />
 				<el-table-column property="status" label="状态" width="80">
 					<template #default="scope">
 						<el-tag v-if="scope.row.status === 0" type="success">在售</el-tag>
@@ -58,7 +58,7 @@
 					<template #default="scope">{{ scope.row.stock }}{{ scope.row.unit }}</template>
 				</el-table-column>
 
-				<el-table-column property="description" label="描述" width="160" show-overflow-tooltip />
+				<el-table-column property="description" label="描述" width="100" show-overflow-tooltip />
 				<el-table-column label="创建日期" width="120">
 					<template #default="scope">{{ moment(scope.row.createTime).format("YYYY-MM-DD") }}</template>
 				</el-table-column>
@@ -147,8 +147,8 @@
 					</el-col>
 
 					<el-col :span="24">
-						<el-form-item label="价格：" prop="price">
-							<el-input-number v-model="form.price" :step="0.1" :min="0" class="form-input" />
+						<el-form-item label="积分价格：" prop="price">
+							<el-input-number v-model="form.pointPrice" :step="0.1" :min="0" class="form-input" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="24">
@@ -210,7 +210,7 @@ const form = reactive({
 	id: 0,
 	categoryName: "",
 	categoryid: undefined as number | undefined,
-	price: 0,
+	pointPrice: 0,
 	stock: 0,
 	imageurl: "",
 	status: 0,
@@ -223,9 +223,9 @@ const formInline = reactive<ItemQueryRequest>({
 	pageSize: 10,
 	categoryName: "",
 	categoryid: undefined,
-	maxPrice: 0,
+	maxPointPrice: 0,
 	maxStock: 0,
-	minPrice: 0,
+	minPointPrice: 0,
 	minStock: 0,
 });
 
@@ -235,7 +235,7 @@ interface Item {
 	imageurl: string;
 	stock: number;
 	status: number;
-	price: number;
+	pointPrice: number;
 	unit: string;
 	id: string;
 	description: string;
@@ -316,7 +316,7 @@ const addDialog = () => {
 	form.categoryid = undefined;
 	form.stock = 0;
 	form.imageurl = "";
-	form.price = 0;
+	form.pointPrice = 0;
 	form.unit = "";
 	imageUrl.value = "";
 };
@@ -335,7 +335,7 @@ const updateDialog = async (id: string) => {
 		form.stock = res.data?.stock || 0;
 		form.imageurl = res.data?.imageurl || "";
 		imageUrl.value = form.imageurl;
-		form.price = res.data?.price || 0;
+		form.pointPrice = res.data?.pointPrice || 0;
 		form.unit = res.data?.unit || "";
 	}
 };

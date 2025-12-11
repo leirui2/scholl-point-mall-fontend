@@ -35,7 +35,7 @@
 
 				<div class="item-price">
 					<span class="price-label">价格</span>
-					<span class="price-value">¥{{ ItemData.price || 0 }}</span>
+					<span class="price-value">¥{{ ItemData.pointPrice || 0 }}</span>
 					<span class="price-unit">/ {{ ItemData.unit || "件" }}</span>
 				</div>
 
@@ -58,11 +58,17 @@
 						<span class="quantity-label">数量</span>
 						<el-input-number v-model="purchaseQuantity" :min="1" :max="ItemData.stock || 1" size="large" controls-position="right">
 						</el-input-number>
+						<div style="margin-left: 50px">
+							<el-radio-group v-model="PaymentMethods" class="gender-group">
+								<el-radio :value="1" border>积分购买</el-radio>
+								<el-radio :value="0" border>支付宝购买</el-radio>
+							</el-radio-group>
+						</div>
 					</div>
 
 					<div class="total-price">
 						<span class="total-label">总价</span>
-						<span class="total-value">¥{{ (ItemData.price || 0) * purchaseQuantity }}</span>
+						<span class="total-value">¥{{ (ItemData.pointPrice || 0) * purchaseQuantity }}</span>
 					</div>
 
 					<div class="action-buttons">
@@ -92,15 +98,15 @@
 						</div>
 						<div class="detail-row">
 							<span class="detail-label">上架时间：</span>
-							<span class="detail-value">{{ ItemData.createTime || "未知" }}</span>
+							<span class="detail-value">{{ moment(ItemData.createTime).format("YYYY-MM-DD , h:mm:ss") || "未知" }}</span>
 						</div>
 						<div class="detail-row">
 							<span class="detail-label">更新时间：</span>
-							<span class="detail-value">{{ ItemData.updateTime || "未知" }}</span>
+							<span class="detail-value">{{ moment(ItemData.updateTime).format("YYYY-MM-DD , h:mm:ss") || "未知" }}</span>
 						</div>
 						<div class="detail-row">
-							<span class="detail-label">销售数量：</span>
-							<span class="detail-value">{{ ItemData.order_count || 0 }} {{ ItemData.unit || "件" }}</span>
+							<span class="detail-label">订单数数量：</span>
+							<span class="detail-value">{{ Number(ItemData.orderCount) || 0 }} {{ ItemData.unit || "件" }}</span>
 						</div>
 					</div>
 				</el-tab-pane>
@@ -116,15 +122,34 @@
 	<div v-else class="loading-container">
 		<el-loading :full="true" />
 	</div>
+
+	<!-- 二维码显示对话框 -->
+	<el-dialog v-model="qrCodeDialogVisible" title="支付宝支付二维码" width="300px">
+		<div class="qr-code-container" v-loading="loading">
+			<img :src="qrCodeImage" alt="支付二维码" class="qr-code-image" v-if="qrCodeImage" />
+			<p class="qr-code-url" v-if="qrCodeUrl">请扫码支付 ：{{ totalAmount.toFixed(2) }}元。</p>
+			<el-button type="primary" @click="copyUrl">复制链接</el-button>
+		</div>
+	</el-dialog>
 </template>
 
 <script setup lang="ts">
-import { useRouter, useRoute } from "vue-router";
-import { onMounted, ref } from "vue";
-import { ItemControllerService, PurchaseItemControllerService } from "../../../../generated";
+import { useRoute, useRouter } from "vue-router";
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import type { ItemCategoryVO } from "../../../../generated";
+import { AliPayControllerService, ItemControllerService, PurchaseItemControllerService } from "../../../../generated";
 import { Picture } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import QRCode from "qrcode";
+import moment from "moment/moment";
+
+// 二维码相关变量
+const qrCodeDialogVisible = ref(false);
+const qrCodeUrl = ref("");
+const qrCodeImage = ref("");
+// 支付监控定时器
+const loading = ref(true);
+const payStatusCheckTimer = ref<number | undefined>(undefined);
 
 const router = useRouter();
 const route = useRoute();
@@ -138,8 +163,8 @@ const ItemData = ref<ItemCategoryVO>({
 	id: 0,
 	imageurl: "",
 	name: "",
-	order_count: 0,
-	price: 0,
+	orderCount: 0,
+	pointPrice: 0,
 	status: 0,
 	stock: 0,
 	unit: "",
@@ -149,6 +174,13 @@ const ItemData = ref<ItemCategoryVO>({
 // 购买数量
 const purchaseQuantity = ref(1);
 
+//付款方式
+const PaymentMethods = ref(1);
+//订单号
+const orderNumber = ref("");
+// 支付宝扫码总金额
+const totalAmount = ref(0.0);
+
 // 当前激活的标签页
 const activeTab = ref("details");
 
@@ -157,8 +189,6 @@ const loadItem = async () => {
 	const num = String(route.query.itemId);
 	const res = await ItemControllerService.getItemByIdUsingGet(num);
 	if (res.code === 0) {
-		console.log(res.data);
-		// 确保res.data存在再赋值
 		if (res.data) {
 			ItemData.value = res.data as ItemCategoryVO;
 		} else {
@@ -173,15 +203,107 @@ const loadItem = async () => {
 
 // 处理购买按钮点击
 const handlePurchase = async () => {
-	const res = await PurchaseItemControllerService.purchaseItemUsingPost({
-		itemId: ItemData.value.id,
-		num: purchaseQuantity.value,
-	});
-	if (res.code === 0) {
-		ElMessage.success("购买成功");
-		await loadItem();
+	let res = null;
+	if (PaymentMethods.value === 0) {
+		// 支付宝购买
+		try {
+			res = await AliPayControllerService.generatePayQrCodeUsingPost(ItemData.value.id, purchaseQuantity.value);
+			if (res.code === 0) {
+				// 保存订单号
+				orderNumber.value = res.data.orderNumber || "";
+				// 保存总金额（使用后端返回的值）
+				totalAmount.value = res.data.totalAmount || 0;
+				// 生成二维码并显示
+				showQRCode(res.data.qrCodeUrl || res.data);
+				// 开始监控支付状态
+				startPayStatusMonitoring();
+			} else {
+				ElMessage.error(res.message || "生成支付二维码失败");
+			}
+		} catch (error) {
+			console.error("支付宝支付请求失败:", error);
+			ElMessage.error("支付请求失败，请稍后重试");
+		}
 	} else {
-		ElMessage.error(res.message || "购买失败");
+		// 积分购买
+		try {
+			res = await PurchaseItemControllerService.purchaseItemUsingPost({
+				itemId: ItemData.value.id,
+				num: purchaseQuantity.value,
+			});
+
+			if (res.code === 0) {
+				ElMessage.success("购买成功");
+				await loadItem();
+			} else {
+				ElMessage.error(res.message || "购买失败");
+			}
+		} catch (error) {
+			console.error("积分购买请求失败:", error);
+			ElMessage.error("购买请求失败，请稍后重试");
+		}
+	}
+};
+
+// 开始监控支付状态
+const startPayStatusMonitoring = () => {
+	// 清除之前的定时器（如果有）
+	if (payStatusCheckTimer.value) {
+		clearInterval(payStatusCheckTimer.value);
+	}
+	// 每3秒检查一次支付状态
+	payStatusCheckTimer.value = window.setInterval(async () => {
+		try {
+			await handlePaySuccess();
+		} catch (error) {
+			console.error("检查支付状态失败:", error);
+		}
+	}, 3000);
+
+	// 1分钟后自动停止监控（60秒）
+	setTimeout(() => {
+		stopPayStatusMonitoring();
+		if (qrCodeDialogVisible.value) {
+			ElMessage.info("支付超时，请重新下单或查看订单状态");
+			qrCodeDialogVisible.value = false;
+		}
+	}, 60000); // 1分钟
+};
+
+// 处理支付成功检查
+const handlePaySuccess = async () => {
+	// 只有在二维码显示时才检查支付状态
+	if (!qrCodeDialogVisible.value || !orderNumber.value) return;
+
+	try {
+		const res = await AliPayControllerService.queryPayStatusUsingPost(orderNumber.value);
+		// 根据支付宝返回的成功状态判断
+		if (
+			res.alipay_trade_query_response.code === "10000" &&
+			res.alipay_trade_query_response.msg === "Success" &&
+			res.alipay_trade_query_response.trade_status === "TRADE_SUCCESS"
+		) {
+			// 支付成功，停止监控
+			stopPayStatusMonitoring();
+			// 显示成功消息
+			ElMessage.success("支付成功");
+			// 关闭二维码对话框
+			qrCodeDialogVisible.value = false;
+			// 重新加载商品信息
+			await loadItem();
+		}
+		// 如果支付未完成，继续监控
+	} catch (error) {
+		console.error("查询支付状态失败:", error);
+		// 可以选择在多次失败后停止监控
+	}
+};
+
+// 停止监控支付状态
+const stopPayStatusMonitoring = () => {
+	if (payStatusCheckTimer.value) {
+		window.clearInterval(payStatusCheckTimer.value);
+		payStatusCheckTimer.value = undefined;
 	}
 };
 
@@ -190,13 +312,89 @@ const handleAddToCart = () => {
 	// 这里您自己实现加入购物车逻辑
 	ElMessage.info("加入购物车功能待实现");
 };
+// 监听二维码对话框关闭事件
+watch(qrCodeDialogVisible, (newVal) => {
+	// 如果对话框被手动关闭，停止监控
+	if (!newVal) {
+		stopPayStatusMonitoring();
+		// 清理相关数据
+		qrCodeUrl.value = "";
+		qrCodeImage.value = "";
+		orderNumber.value = "";
+	}
+});
+
+// 监听二维码URL变化，生成二维码图片
+watch(qrCodeUrl, async (newUrl) => {
+	if (newUrl) {
+		try {
+			qrCodeImage.value = await QRCode.toDataURL(newUrl, {
+				margin: 2,
+				errorCorrectionLevel: "M",
+				color: {
+					dark: "#000000",
+					light: "#ffffff",
+				},
+			});
+			// 二维码生成完成后，设置loading为false
+			loading.value = false;
+		} catch (error) {
+			console.error("生成二维码失败:", error);
+			ElMessage.error("生成二维码失败");
+			// 出错时也关闭loading状态
+			loading.value = false;
+		}
+	}
+});
+
+// 复制链接到剪贴板
+const copyUrl = () => {
+	navigator.clipboard
+		.writeText(qrCodeUrl.value)
+		.then(() => {
+			ElMessage.success("链接已复制到剪贴板");
+		})
+		.catch(() => {
+			ElMessage.error("复制失败");
+		});
+};
+// 显示二维码的函数
+const showQRCode = (url: string) => {
+	// 设置loading状态为true
+	loading.value = true;
+	// 设置二维码内容
+	qrCodeUrl.value = url;
+	// 显示二维码对话框
+	qrCodeDialogVisible.value = true;
+};
 
 onMounted(() => {
 	loadItem();
 });
+// 在组件卸载前清理定时器
+onBeforeUnmount(() => {
+	stopPayStatusMonitoring();
+});
 </script>
 
 <style scoped>
+.qr-code-container {
+	text-align: center;
+}
+
+.qr-code-image {
+	width: 200px;
+	height: 200px;
+	margin: 0 auto 5px;
+	display: block;
+}
+
+.qr-code-url {
+	word-break: break-all;
+	font-size: 16px;
+	color: #606266;
+}
+
 .item-detail-container {
 	max-width: 1200px;
 	margin: 0 auto;
@@ -238,11 +436,6 @@ onMounted(() => {
 	background-color: #f5f7fa;
 	color: #909399;
 	font-size: 14px;
-}
-
-.image-error .el-icon {
-	font-size: 30px;
-	margin-bottom: 10px;
 }
 
 .item-info {

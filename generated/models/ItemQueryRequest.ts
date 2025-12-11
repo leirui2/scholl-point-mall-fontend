@@ -7,9 +7,9 @@ export type ItemQueryRequest = {
     categoryid?: number;
     current?: number;
     description?: string;
-    maxPrice?: number;
+    maxPointPrice?: number;
     maxStock?: number;
-    minPrice?: number;
+    minPointPrice?: number;
     minStock?: number;
     name?: string;
     pageSize?: number;

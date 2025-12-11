@@ -64,7 +64,7 @@
 						<img :src="item.imageurl" :alt="item.name" class="item-image" />
 						<div class="item-info">
 							<h4 class="item-name">{{ item.name }}</h4>
-							<p class="item-price">{{ item.price }} 积分</p>
+							<p class="item-price">{{ item.pointPrice }} 积分</p>
 						</div>
 					</el-card>
 				</el-col>

@@ -11,7 +11,7 @@ export type ItemCategoryVO = {
     imageurl?: string;
     name?: string;
     orderCount?: number;
-    price?: number;
+    pointPrice?: number;
     status?: number;
     stock?: number;
     unit?: string;

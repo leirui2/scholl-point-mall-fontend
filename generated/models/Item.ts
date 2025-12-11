@@ -11,7 +11,7 @@ export type Item = {
     isDelete?: number;
     name?: string;
     orderCount?: number;
-    price?: number;
+    pointPrice?: number;
     status?: number;
     stock?: number;
     unit?: string;
